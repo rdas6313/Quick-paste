@@ -1,0 +1,20 @@
+[
+{
+    "id" : "quick_paste",
+    "caption" : "Quick Paste",
+    "children":
+    [
+    {
+        "caption" : "Pastebin",
+        "children":
+        [
+        {   
+            "id"      : "pastebin_1",
+            "caption" : "Guest paste",
+            "command" : "quick_paste"
+        }
+        ]
+    }
+    ]
+}
+]
