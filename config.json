@@ -1,0 +1,10 @@
+{
+	"api_dev_key": "AIKXQEl1Z3pZhZO1q7afM7LOrAkZ5uE3",
+	"base_url"   : "pastebin.com",
+	"paste_url"  : "/api/api_post.php",
+	"general_error_msg"  : "Oops! Some unexpected error happened. \n",
+	"client_error_msg"   : "Hummm! Looks like a client error. Try again later. \n",
+	"server_error_msg"   : "Hummm! Looks like a server error. Try again later. \n",
+	"redirect_error_msg" : "Hummm! Looks like a redirect response. contact developer or raise a issue. \n",
+	"info_error_msg"     : "Hummm! Looks like a informational response. contact developer or raise a issue. \n"
+}
