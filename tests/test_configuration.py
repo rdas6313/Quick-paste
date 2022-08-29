@@ -1,7 +1,6 @@
 from unittesting import DeferrableTestCase
 from Quick_Paste.configuration import *
 
-
 class TestConfiguration(DeferrableTestCase):
 
 	def setUp(self):

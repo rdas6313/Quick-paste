@@ -2,6 +2,7 @@ from .logger import Logger
 import json
 import os
 
+
 class ConfigType:
 	API_KEY = "api_dev_key"
 	PASTE_URL = "paste_url"
@@ -44,5 +45,3 @@ class Configuration:
 
 	def getConfig(self):
 		return self.__configs
-
-		
