@@ -1,6 +1,7 @@
 from .logger import Logger
 import http.client as http
 from urllib.parse import quote
+from .configuration import *
 import json
 import os
 
@@ -24,16 +25,6 @@ class PasteExpire:
 class User:
 	GUEST = 0
 	USER = 1
-
-class ConfigType:
-	API_KEY = "api_dev_key"
-	PASTE_URL = "paste_url"
-	BASE_URL = "base_url"
-	GENERAL_ERROR_MSG = "general_error_msg"
-	CLIENT_ERROR_MSG = "client_error_msg"
-	SERVER_ERROR_MSG = "server_error_msg"
-	REDIRECT_ERROR_MSG = "redirect_error_msg"
-	INFO_ERROR_MSG = "info_error_msg"
 
 class Pastebin:
 	API_PASTE_CODE  = "api_paste_code"
@@ -60,17 +51,8 @@ class PastebinRemote:
 		
 
 	def loadConfig(self):
-		try:
-
-			with open(self.getConfigPath(), 'r') as config_file:
-				config = json.load(config_file)
-				for key in config.keys():
-					self.configs[key] = config[key]
-
-		except FileNotFoundError as e:
-			self.log.error("PastebinRemote: {}".format(e))
-		except:
-			self.log.error("PastebinRemote: Unknown Error")
+		config = Configuration()
+		self.configs = config.getConfig() 
 
 	def generatePayload(self,data): #data : dict
 		payload = ""
@@ -158,7 +140,7 @@ class PastebinDriver(PastebinRemote):
 		}
 	
 		#add paste format,get format and add it like data[Pastebin.API_PASTE_FORMAT] = ".c"
-		self.log.debug(data)
+		self.log.debug("PastebinDriver: {}".format(data))
 		status,msg = self.push(data)
 		res_msg = ""
 		is_success = False
