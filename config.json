@@ -6,5 +6,6 @@
 	"client_error_msg"   : "Hummm! Looks like a client error. Try again later. \n",
 	"server_error_msg"   : "Hummm! Looks like a server error. Try again later. \n",
 	"redirect_error_msg" : "Hummm! Looks like a redirect response. contact developer or raise a issue. \n",
-	"info_error_msg"     : "Hummm! Looks like a informational response. contact developer or raise a issue. \n"
+	"info_error_msg"     : "Hummm! Looks like a informational response. contact developer or raise a issue. \n",
+	"success_paste_msg"	 : "\n\n Url already copied to clipboard. Paste it using ctrl-v."
 }

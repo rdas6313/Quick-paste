@@ -11,7 +11,7 @@
         {   
             "id"      : "pastebin_1",
             "caption" : "Guest paste",
-            "command" : "quick_paste"
+            "command" : "guest_paste"
         }
         ]
     }

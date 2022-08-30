@@ -12,6 +12,7 @@ class ConfigType:
 	SERVER_ERROR_MSG = "server_error_msg"
 	REDIRECT_ERROR_MSG = "redirect_error_msg"
 	INFO_ERROR_MSG = "info_error_msg"
+	SUCCESS_PASTE_MSG = "success_paste_msg"
 
 
 class Configuration:

@@ -62,7 +62,7 @@ class PastebinRemote:
 			self.log.debug(dataList)
 			for key in dataList:
 				self.log.debug(""+key+":"+data[key])
-				if key is ConfigType.API_KEY or key is Pastebin.API_PASTE_CODE:
+				if key is Pastebin.API_PASTE_NAME or key is Pastebin.API_PASTE_CODE:
 					payload += key + '=' + quote(data[key])
 				else:
 					payload += key + '=' + data[key]	
@@ -128,6 +128,8 @@ class PastebinRemote:
 
 class PastebinDriver(PastebinRemote):
 
+	__CLASS_NAME = "PastebinDriver"
+
 	def __init__(self):
 		PastebinRemote.__init__(self)
 
@@ -140,7 +142,8 @@ class PastebinDriver(PastebinRemote):
 		}
 	
 		#add paste format,get format and add it like data[Pastebin.API_PASTE_FORMAT] = ".c"
-		self.log.debug("PastebinDriver: {}".format(data))
+		
+		self.log.info("{}: Before sending to pastebin, data {}".format(self.__CLASS_NAME,data))
 		status,msg = self.push(data)
 		res_msg = ""
 		is_success = False
@@ -157,6 +160,7 @@ class PastebinDriver(PastebinRemote):
 		if msg:
 			res_msg += msg
 
+		self.log.info("{}: success {}, status {}, msg {}".format(self.__CLASS_NAME,is_success,status,res_msg))
 		callable((is_success,res_msg))
 
 
