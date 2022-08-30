@@ -41,4 +41,8 @@ class SublimeApi(sublime_plugin.TextCommand):
 		window = self.view.window()
 		window.show_input_panel(title,place_holder,on_done,on_change,on_cancel)
 
+	def selectFromList(self,items,on_select,place_holder,initial_index=0):
+		window = self.view.window()
+		window.show_quick_panel(items,on_select,0,initial_index,None,place_holder)
+
 		
