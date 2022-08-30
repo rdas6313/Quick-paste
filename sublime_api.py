@@ -36,4 +36,9 @@ class SublimeApi(sublime_plugin.TextCommand):
 
 	def runInBackground(self,callable_method,delay=0):
 		sublime.set_timeout_async(callable_method,delay)
+
+	def inputText(self,title,place_holder,on_done,on_cancel=None,on_change=None):
+		window = self.view.window()
+		window.show_input_panel(title,place_holder,on_done,on_change,on_cancel)
+
 		
