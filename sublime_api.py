@@ -21,7 +21,9 @@ class SublimeApi(sublime_plugin.TextCommand):
 		return data
 
 	def getFileName(self):
-		return "Sample test file name"
+		window = self.view.window()
+		data = window.extract_variables()
+		return data.get("file_name","Sample file name")
 
 	def showMessage(self,msg):
 		sublime.message_dialog(msg)
