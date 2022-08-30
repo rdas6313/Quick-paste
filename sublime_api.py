@@ -11,7 +11,7 @@ class SublimeApi(sublime_plugin.TextCommand):
 		pass
 
 	def getContent(self):
-		allcontent = self.view.visible_region()	##only visible region is getting selected	
+		allcontent = sublime.Region(0,self.view.size())
 		selection = self.view.sel()
 		data = self.view.substr(selection[0])
 		if not data:
