@@ -1,11 +1,12 @@
 {
-	"api_dev_key": "AIKXQEl1Z3pZhZO1q7afM7LOrAkZ5uE3",
-	"base_url"   : "pastebin.com",
-	"paste_url"  : "/api/api_post.php",
-	"general_error_msg"  : "Oops! Some unexpected error happened. \n",
-	"client_error_msg"   : "Hummm! Looks like a client error. Try again later. \n",
-	"server_error_msg"   : "Hummm! Looks like a server error. Try again later. \n",
-	"redirect_error_msg" : "Hummm! Looks like a redirect response. contact developer or raise a issue. \n",
-	"info_error_msg"     : "Hummm! Looks like a informational response. contact developer or raise a issue. \n",
-	"success_paste_msg"	 : "\n\n Url already copied to clipboard. Paste it using ctrl-v."
+    "api_dev_key": "AIKXQEl1Z3pZhZO1q7afM7LOrAkZ5uE3", 
+    "api_user_key": "abcdef", 
+    "base_url": "pastebin.com", 
+    "client_error_msg": "Hummm! Looks like a client error. Try again later. \n", 
+    "general_error_msg": "Oops! Some unexpected error happened. \n", 
+    "info_error_msg": "Hummm! Looks like a informational response. contact developer or raise a issue. \n", 
+    "paste_url": "/api/api_post.php", 
+    "redirect_error_msg": "Hummm! Looks like a redirect response. contact developer or raise a issue. \n", 
+    "server_error_msg": "Hummm! Looks like a server error. Try again later. \n", 
+    "success_paste_msg": "\n\n Url already copied to clipboard. Paste it using ctrl-v."
 }

@@ -37,4 +37,24 @@ class TestConfiguration(DeferrableTestCase):
 		self.assertEqual(base_url,"pastebin.com")
 		self.assertEqual(general_error_msg,"Oops! Some unexpected error happened. \n")
 
+	def test_updateConfig(self):
+		success,msg = self.remote.updateConfig(ConfigType.USER_KEY,"abcdef")
+		self.assertTrue(success)
+
+	def test_updateConfig_with_empty_key(self):
+		success,msg = self.remote.updateConfig(None,"abcdef")
+		self.assertFalse(success)
+
+	def test_updateConfig_with_empty_value(self):
+		success,msg = self.remote.updateConfig("api_user_key",None)
+		self.assertFalse(success)
+
+	def test_updateConfig_with_non_string_value(self):
+		success,msg = self.remote.updateConfig("api_user_key",2)
+		self.assertFalse(success)
+
+	def test_updateConfig_with_non_string_key(self):
+		success,msg = self.remote.updateConfig(2,"Abcdedf")
+		self.assertFalse(success)
+
 	

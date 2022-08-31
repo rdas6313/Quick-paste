@@ -13,6 +13,7 @@ class ConfigType:
 	REDIRECT_ERROR_MSG = "redirect_error_msg"
 	INFO_ERROR_MSG = "info_error_msg"
 	SUCCESS_PASTE_MSG = "success_paste_msg"
+	USER_KEY = "api_user_key"
 
 
 class Configuration:
@@ -46,3 +47,30 @@ class Configuration:
 
 	def getConfig(self):
 		return self.__configs
+
+	def updateConfig(self,key,value):
+		if not self.__configs:
+			return (False,"Configuration not loaded from file. First load the configuration then update")
+
+		try:
+			if type(key) is not str or type(value) is not str:
+				raise ValueError("key and value must be string type")
+			self.__configs[key] = value
+			with open(self.__getConfigPath(),'w') as config_file:
+				json.dump(self.__configs,config_file,indent=4,sort_keys=True)
+
+		except FileNotFoundError as e:
+			self.log.error("{}: {} where key {} and value {}".format(self.__CLASS_NAME,e,key,value))
+		except ValueError as e:
+			self.log.error("{}: {} where key {} and value {}".format(self.__CLASS_NAME,e,key,value))
+		except:
+			self.log.error("{}: Unknown Error where key {} and value {}".format(self.__CLASS_NAME,key,value))
+		else:
+			return (True,"Updated successfully")
+
+		return (False,"Some error occured while updating.")
+
+
+
+
+
