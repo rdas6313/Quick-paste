@@ -42,9 +42,9 @@ class Configuration:
 					self.__configs[key] = config[key]
 
 		except FileNotFoundError as e:
-			self.log.error("{}: {}".format(self.__CLASS_NAME,e))
+			self.log.error("{}: {} while loading configuration".format(self.__CLASS_NAME,e))
 		except:
-			self.log.error("{}: Unknown Error".format(self.__CLASS_NAME))
+			self.log.error("{}: Unknown Error while loading configuration".format(self.__CLASS_NAME))
 
 	def getConfig(self):
 		return copy.deepcopy(self.__configs)
