@@ -37,6 +37,15 @@ class TestConfiguration(DeferrableTestCase):
 		self.assertEqual(base_url,"pastebin.com")
 		self.assertEqual(general_error_msg,"Oops! Some unexpected error happened. \n")
 
+	def test_deepcopy(self):
+		configs = self.remote.getConfig()
+		configs[ConfigType.USER_KEY] = "raja"
+		configs2 = self.remote.getConfig()
+		#print("original : {}, change: {}".format(configs2[ConfigType.USER_KEY],configs[ConfigType.USER_KEY]))
+		self.assertNotEqual(configs2[ConfigType.USER_KEY],configs[ConfigType.USER_KEY])
+		
+
+
 	def test_updateConfig(self):
 		success,msg = self.remote.updateConfig(ConfigType.USER_KEY,"abcdef")
 		self.assertTrue(success)

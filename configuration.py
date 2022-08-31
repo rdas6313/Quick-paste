@@ -1,6 +1,7 @@
 from .logger import Logger
 import json
 import os
+import copy
 
 
 class ConfigType:
@@ -46,7 +47,7 @@ class Configuration:
 			self.log.error("{}: Unknown Error".format(self.__CLASS_NAME))
 
 	def getConfig(self):
-		return self.__configs
+		return copy.deepcopy(self.__configs)
 
 	def updateConfig(self,key,value):
 		if not self.__configs:
