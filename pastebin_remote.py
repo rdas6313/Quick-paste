@@ -1,5 +1,6 @@
 from .logger import Logger
-import http.client as http
+from .http import *
+#import http.client as http
 from urllib.parse import quote
 from .configuration import *
 import json
@@ -35,21 +36,16 @@ class Pastebin:
 	API_USER_KEY = "api_user_key"
 	API_OPTION = "api_option"
 
-class PastebinRemote:
+class PastebinDriver():
 
+	__CLASS_NAME = "PastebinDriver"
 
 	def __init__(self):
 		self.log = Logger()
 		self.configs = {}
 		self.loadConfig()
+		self.http = HttpClient()
 		
-
-	def getConfigPath(self):
-		dir_path = os.path.dirname(os.path.realpath(__file__))
-		config_path = os.path.join(dir_path,'config.json')
-		return config_path
-		
-
 	def loadConfig(self):
 		config = Configuration()
 		self.configs = config.getConfig() 
@@ -76,77 +72,39 @@ class PastebinRemote:
 		finally:
 			return payload
 
-	def push(self,data): #data : dict
-		conn = None
-		res = None
-		try:
-			
-			api_option = "paste"
-			self.log.info("PastebinRemote Connecting to Pastebin server.")
-			conn = http.HTTPSConnection(self.configs[ConfigType.BASE_URL])
-			data[ConfigType.API_KEY] = self.configs[ConfigType.API_KEY]
-			data[Pastebin.API_OPTION] = api_option
-			payload = self.generatePayload(data)
-			self.log.debug(payload)
-			headers = {
-			  'Content-Type': 'application/x-www-form-urlencoded'
-			}			
-			conn.request("POST", self.configs[ConfigType.PASTE_URL], payload, headers)
-			res = conn.getresponse()
-			res_data = res.read()
-			data = res_data.decode("utf-8")
-			self.log.info("PastebinRemote Response Code : {}".format(res.status))
-			self.log.info("PastebinRemote Response Data : {}".format(data))
-			
-
-		except ValueError as e:
-			self.log.error("PastebinRemote: {}".format(e))
-		except InvalidURL as e:
-			self.log.error("PastebinRemote: {}".format(e))
-		except NotConnected as e:
-			self.log.error("PastebinRemote: {}".format(e))
-		except CannotSendRequest as e:
-			self.log.error("PastebinRemote: {}".format(e))
-		except HTTPException as e:
-			self.log.error("PastebinRemote: {}".format(e))
-		except:
-			self.log.error("PastebinRemote: Unknown exception")
-		finally:
-			if conn:
-				conn.close()
-				self.log.info("PastebinRemote Connection is closed with server")
-			else:
-				self.log.error("PastebinRemote: Connection is null")
-			if res:
-				return (res.status,data)
-			else:
-				return (400,None)
-
-
-
-
-
-class PastebinDriver(PastebinRemote):
-
-	__CLASS_NAME = "PastebinDriver"
-
-	def __init__(self):
-		PastebinRemote.__init__(self)
 
 	def guestPush(self,paste_code,callable,paste_name="default"): #paste_code : str , callable : method(tuple) , paste_name : str
+		
+		api_option = "paste"
+
 		data = {
+			Pastebin.API_OPTION : api_option,
 			Pastebin.API_PASTE_CODE : paste_code,
 			Pastebin.API_PASTE_NAME : paste_name,
 			Pastebin.API_PASTE_PRIVATE : PasteType.PUBLIC,
-			Pastebin.API_PASTE_EXPIRE : PasteExpire.NEVER
+			Pastebin.API_PASTE_EXPIRE : PasteExpire.NEVER,
+			ConfigType.API_KEY : self.configs.get(ConfigType.API_KEY,ConfigType.API_KEY),
+
 		}
+
+		payload = self.generatePayload(data)
 	
 		#add paste format,get format and add it like data[Pastebin.API_PASTE_FORMAT] = ".c"
 		
+		headers = {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+
+		base_url = self.configs.get(ConfigType.BASE_URL,ConfigType.BASE_URL)
+		path = self.configs.get(ConfigType.PASTE_URL,ConfigType.PASTE_URL)	
+
 		self.log.info("{}: Before sending to pastebin, data {}".format(self.__CLASS_NAME,data))
-		status,msg = self.push(data)
+
+		status,msg = self.http.post(base_url,path,payload,headers)
+		
 		res_msg = ""
 		is_success = False
+		
 		if status >= 100 and status < 200:
 			res_msg = self.configs[ConfigType.INFO_ERROR_MSG]
 		elif status >= 300 and status < 400:
