@@ -15,6 +15,7 @@ class ConfigType:
 	INFO_ERROR_MSG = "info_error_msg"
 	SUCCESS_PASTE_MSG = "success_paste_msg"
 	USER_KEY = "api_user_key"
+	LOGIN_URL = "user_login_url" 
 
 
 class Configuration:

@@ -35,6 +35,8 @@ class Pastebin:
 	API_PASTE_FORMAT = "api_paste_format"
 	API_USER_KEY = "api_user_key"
 	API_OPTION = "api_option"
+	API_USER_NAME = "api_user_name"
+	API_USER_PASSWORD = "api_user_password"
 
 class PastebinDriver():
 
@@ -58,7 +60,7 @@ class PastebinDriver():
 			self.log.debug(dataList)
 			for key in dataList:
 				self.log.debug(""+key+":"+data[key])
-				if key is Pastebin.API_PASTE_NAME or key is Pastebin.API_PASTE_CODE:
+				if key is Pastebin.API_PASTE_NAME or key is Pastebin.API_PASTE_CODE or key is Pastebin.API_USER_NAME or key is Pastebin.API_USER_PASSWORD:
 					payload += key + '=' + quote(data[key])
 				else:
 					payload += key + '=' + data[key]	
@@ -120,6 +122,52 @@ class PastebinDriver():
 
 		self.log.info("{}: success {}, status {}, msg {}".format(self.__CLASS_NAME,is_success,status,res_msg))
 		callable((is_success,res_msg))
+
+	def getUserToken(self,username,password):
+		
+		if not username or not password:
+			return (False,"Username and password can't be empty")
+		elif type(username) is not str or type(password) is not str:
+			return (False,"Username and password must be string")
+
+		headers = {
+			'Content-Type': 'application/x-www-form-urlencoded'
+		}
+
+		data = {
+			ConfigType.API_KEY : self.configs.get(ConfigType.API_KEY,ConfigType.API_KEY),
+			Pastebin.API_USER_NAME : username,
+			Pastebin.API_USER_PASSWORD : password
+		}
+
+		payload = self.generatePayload(data)
+
+		base_url = self.configs.get(ConfigType.BASE_URL,ConfigType.BASE_URL)
+		path = self.configs.get(ConfigType.LOGIN_URL,ConfigType.LOGIN_URL)
+
+		status,msg = self.http.post(base_url,path,payload,headers)
+		
+		res_msg = ""
+		is_success = False
+		
+		if status >= 100 and status < 200:
+			res_msg = self.configs[ConfigType.INFO_ERROR_MSG]
+		elif status >= 300 and status < 400:
+			res_msg = self.configs[ConfigType.REDIRECT_ERROR_MSG]
+		elif status >= 400 and status < 500:
+			res_msg = self.configs[ConfigType.CLIENT_ERROR_MSG]
+		elif status >= 500 and status < 600:
+			res_msg = self.configs[ConfigType.SERVER_ERROR_MSG]
+		else:
+			is_success = True
+		if msg:
+			res_msg += msg
+
+		self.log.info("{}: success {}, status {}, msg {}".format(self.__CLASS_NAME,is_success,status,res_msg))
+
+		return (is_success,res_msg)
+
+
 
 
 		

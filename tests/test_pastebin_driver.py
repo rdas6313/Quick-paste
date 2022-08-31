@@ -61,3 +61,33 @@ class TestPastebinDriver(DeferrableTestCase):
 		data = ["raja","das","abc"]
 		self.assertRaises(Exception,self.remote.generatePayload(data))		
 		#pass
+
+	def test_getUserToken(self):
+		username = ""
+		password = "s"
+		#success,msg = self.remote.getUserToken(username,password)
+		#self.assertTrue(success)
+
+	def test_getUserToken_with_empty_username_or_password(self):
+		username = ""
+		password = ""
+		success,msg = self.remote.getUserToken(username,password)
+		self.assertFalse(success)
+
+		username = ""
+		password = ""
+		success,msg = self.remote.getUserToken(username,password)
+		self.assertFalse(success)
+
+	def test_getUserToken_with_wrong_username(self):
+		username = ""
+		password = ""
+		success,msg = self.remote.getUserToken(username,password)
+		self.assertFalse(success)
+
+	def test_getUserToken_with_wrong_password(self):
+		username = ""
+		password = ""
+		success,msg = self.remote.getUserToken(username,password)
+		self.assertFalse(success)
+
