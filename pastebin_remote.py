@@ -74,31 +74,14 @@ class PastebinDriver():
 		finally:
 			return payload
 
-
-	def guestPush(self,paste_code,callable,paste_name="default"): #paste_code : str , callable : method(tuple) , paste_name : str
-		
-		api_option = "paste"
-
-		data = {
-			Pastebin.API_OPTION : api_option,
-			Pastebin.API_PASTE_CODE : paste_code,
-			Pastebin.API_PASTE_NAME : paste_name,
-			Pastebin.API_PASTE_PRIVATE : PasteType.PUBLIC,
-			Pastebin.API_PASTE_EXPIRE : PasteExpire.NEVER,
-			ConfigType.API_KEY : self.configs.get(ConfigType.API_KEY,ConfigType.API_KEY),
-
-		}
+	def __postToServer(self,data,path):
 
 		payload = self.generatePayload(data)
-	
-		#add paste format,get format and add it like data[Pastebin.API_PASTE_FORMAT] = ".c"
-		
 		headers = {
 			'Content-Type': 'application/x-www-form-urlencoded'
 		}
 
-		base_url = self.configs.get(ConfigType.BASE_URL,ConfigType.BASE_URL)
-		path = self.configs.get(ConfigType.PASTE_URL,ConfigType.PASTE_URL)	
+		base_url = self.configs.get(ConfigType.BASE_URL,ConfigType.BASE_URL)	
 
 		self.log.info("{}: Before sending to pastebin, data {}".format(self.__CLASS_NAME,data))
 
@@ -121,6 +104,29 @@ class PastebinDriver():
 			res_msg += msg
 
 		self.log.info("{}: success {}, status {}, msg {}".format(self.__CLASS_NAME,is_success,status,res_msg))
+
+		return (is_success,res_msg)
+
+
+	def guestPush(self,paste_code,callable,paste_name="default"): #paste_code : str , callable : method(tuple) , paste_name : str
+		
+		api_option = "paste"
+
+		data = {
+			Pastebin.API_OPTION : api_option,
+			Pastebin.API_PASTE_CODE : paste_code,
+			Pastebin.API_PASTE_NAME : paste_name,
+			Pastebin.API_PASTE_PRIVATE : PasteType.PUBLIC,
+			Pastebin.API_PASTE_EXPIRE : PasteExpire.NEVER,
+			ConfigType.API_KEY : self.configs.get(ConfigType.API_KEY,ConfigType.API_KEY),
+
+		}
+	
+		#add paste format,get format and add it like data[Pastebin.API_PASTE_FORMAT] = ".c"
+
+		path = self.configs.get(ConfigType.PASTE_URL,ConfigType.PASTE_URL)	
+
+		is_success,res_msg = self.__postToServer(data,path)
 		callable((is_success,res_msg))
 
 	def getUserToken(self,username,password):
@@ -130,42 +136,15 @@ class PastebinDriver():
 		elif type(username) is not str or type(password) is not str:
 			return (False,"Username and password must be string")
 
-		headers = {
-			'Content-Type': 'application/x-www-form-urlencoded'
-		}
-
 		data = {
 			ConfigType.API_KEY : self.configs.get(ConfigType.API_KEY,ConfigType.API_KEY),
 			Pastebin.API_USER_NAME : username,
 			Pastebin.API_USER_PASSWORD : password
 		}
 
-		payload = self.generatePayload(data)
-
-		base_url = self.configs.get(ConfigType.BASE_URL,ConfigType.BASE_URL)
 		path = self.configs.get(ConfigType.LOGIN_URL,ConfigType.LOGIN_URL)
 
-		status,msg = self.http.post(base_url,path,payload,headers)
-		
-		res_msg = ""
-		is_success = False
-		
-		if status >= 100 and status < 200:
-			res_msg = self.configs[ConfigType.INFO_ERROR_MSG]
-		elif status >= 300 and status < 400:
-			res_msg = self.configs[ConfigType.REDIRECT_ERROR_MSG]
-		elif status >= 400 and status < 500:
-			res_msg = self.configs[ConfigType.CLIENT_ERROR_MSG]
-		elif status >= 500 and status < 600:
-			res_msg = self.configs[ConfigType.SERVER_ERROR_MSG]
-		else:
-			is_success = True
-		if msg:
-			res_msg += msg
-
-		self.log.info("{}: success {}, status {}, msg {}".format(self.__CLASS_NAME,is_success,status,res_msg))
-
-		return (is_success,res_msg)
+		return self.__postToServer(data,path)
 
 
 
