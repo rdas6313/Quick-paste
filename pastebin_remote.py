@@ -129,6 +129,8 @@ class PastebinDriver():
 		is_success,res_msg = self.__postToServer(data,path)
 		callable((is_success,res_msg))
 
+
+
 	def getUserToken(self,username,password):
 		
 		if not username or not password:
@@ -147,6 +149,30 @@ class PastebinDriver():
 		return self.__postToServer(data,path)
 
 
+
+	def userPush(self,callable,token,code,name,expire=PasteExpire.NEVER,visibility=PasteType.PRIVATE,extension=""):
+		if not token or not code or not name or not expire or not visibility:
+			callable((False,"User token, Paste code, Paste name, Paste expire, Paste visibility can't be empty")) 
+			return
+		elif type(token) is not str or type(code) is not str or type(name) is not str or type(expire) is not str or type(visibility) is not str or type(extension) is not str:
+			callable((False,"User token, Paste code, Paste name, Paste expire, Paste visibility, Paste format must be string"))
+			return
+			
+		data = {
+			Pastebin.API_OPTION : "paste",
+			Pastebin.API_PASTE_CODE : code,
+			Pastebin.API_PASTE_NAME : name,
+			Pastebin.API_PASTE_PRIVATE : visibility,
+			Pastebin.API_PASTE_EXPIRE : expire,
+			Pastebin.API_USER_KEY : token,
+			ConfigType.API_KEY : self.configs.get(ConfigType.API_KEY,ConfigType.API_KEY),
+			Pastebin.API_PASTE_FORMAT : extension
+		}
+
+		path = self.configs.get(ConfigType.PASTE_URL,ConfigType.PASTE_URL)	
+
+		is_success,res_msg = self.__postToServer(data,path)
+		callable((is_success,res_msg))
 
 
 		

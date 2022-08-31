@@ -9,6 +9,7 @@ class TestPastebinDriver(DeferrableTestCase):
 
 	def on_done(self,data):
 		success,msg = data
+		print(msg)
 		self.assertEqual(success,True)
 
 	def test_guestPush(self):		
@@ -90,4 +91,42 @@ class TestPastebinDriver(DeferrableTestCase):
 		password = ""
 		success,msg = self.remote.getUserToken(username,password)
 		self.assertFalse(success)
+
+	def test_userPush(self):
+		token = "4a7801150880a265cb803b9d144fd153"
+		code = "Test code"
+		name = "Test name"
+		expire = PasteExpire.YEAR
+		vis = PasteType.PRIVATE
+		self.remote.userPush(self.on_done,token,code,name,expire,vis)
+
+	def test_userPush_wrong_token(self):
+		token = "4a7801150880a265cb803b9d144fd"
+		code = "Sample code 2"
+		name = "Test name2"
+		expire = PasteExpire.YEAR
+		vis = PasteType.PRIVATE
+		self.remote.userPush(self.on_wrong_done,token,code,name,expire,vis)
+
+	def on_wrong_done(self,data):
+		success,msg = data
+		print(msg)
+		self.assertFalse(success)
+
+	def test_userPush_empty_content(self):
+		token = "4a7801150880a265cb803b9d144fd153"
+		code = ""
+		name = "Test name2"
+		expire = PasteExpire.YEAR
+		vis = PasteType.PRIVATE
+		self.remote.userPush(self.on_wrong_done,token,code,name,expire,vis)
+
+	def test_userPush_wrong_type_argument(self):
+		token = "4a7801150880a265cb803b9d144fd153"
+		code = "sample code 23"
+		name = "Test name2"
+		expire = PasteExpire.YEAR
+		vis = 1
+		self.remote.userPush(self.on_wrong_done,token,code,name,expire,vis)
+
 
