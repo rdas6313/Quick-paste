@@ -1,6 +1,6 @@
 {
     "api_dev_key": "AIKXQEl1Z3pZhZO1q7afM7LOrAkZ5uE3", 
-    "api_user_key": "abcdef", 
+    "api_user_key": "3e197bf3371a395fc46b1fce4082acfc", 
     "base_url": "pastebin.com", 
     "client_error_msg": "Hummm! Looks like a client error. Try again later. \n", 
     "general_error_msg": "Oops! Some unexpected error happened. \n", 
@@ -8,6 +8,6 @@
     "paste_url": "/api/api_post.php", 
     "redirect_error_msg": "Hummm! Looks like a redirect response. contact developer or raise a issue. \n", 
     "server_error_msg": "Hummm! Looks like a server error. Try again later. \n", 
-    "success_paste_msg": "\n\n Url already copied to clipboard. Paste it using ctrl-v.",
-    "user_login_url" : "/api/api_login.php"
+    "success_paste_msg": "\n\n Url already copied to clipboard. Paste it using ctrl-v.", 
+    "user_login_url": "/api/api_login.php"
 }

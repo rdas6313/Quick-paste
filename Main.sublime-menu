@@ -12,6 +12,11 @@
             "id"      : "pastebin_1",
             "caption" : "Guest paste",
             "command" : "guest_paste"
+        },
+        {   
+            "id"      : "pastebin_2",
+            "caption" : "User paste",
+            "command" : "user_paste"
         }
         ]
     }
