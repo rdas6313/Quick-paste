@@ -41,6 +41,11 @@ class SublimeApi(sublime_plugin.TextCommand):
 		window = self.view.window()
 		window.show_input_panel(title,place_holder,on_done,on_change,on_cancel)
 
+	def inputPassword(self,title,on_done,on_cancel=None,on_change=None):
+		window = self.view.window()
+		panel = window.show_input_panel(title,"",on_done,on_change,on_cancel)
+		panel.settings().set("password", True) #only works for Sublime text 3 and 4
+
 	def selectFromList(self,items,on_select,place_holder,initial_index=0):
 		window = self.view.window()
 		window.show_quick_panel(items,on_select,0,initial_index,None,place_holder)

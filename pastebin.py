@@ -125,7 +125,8 @@ class UserPaste(Paste,SublimeApi):
 			self.showErrorMessage("User name field can't be empty")
 			return
 		self.data["user_name"] = name 
-		self.inputText("Password","Enter pastebin password",self.on_password)
+		self.inputPassword("Password",self.on_password)
+		
 
 	def on_password(self,password):
 		if not password:
@@ -162,6 +163,7 @@ class UserPaste(Paste,SublimeApi):
 			
 			self.init()
 			self.runInBackground(self.startProcessing)
+
 		except ImportError as e:
 			self.log.error("{}: {}".format(self.__CLASS_NAME,e))
 		except FileNotFoundError as e:
