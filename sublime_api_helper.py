@@ -1,27 +1,24 @@
 import sublime
 import sublime_plugin
-from .logger import Logger
 
 
-class SublimeApi(sublime_plugin.TextCommand):
-	
-	log = Logger()
+class SublimeApiHelper:
 
-	def init(self):
-		pass
+	def __init__(self,plugin):
+		self.plugin = plugin
 
 	def getContent(self):
-		allcontent = sublime.Region(0,self.view.size())
-		selection = self.view.sel()
-		data = self.view.substr(selection[0])
+		allcontent = sublime.Region(0,self.plugin.view.size())
+		selection = self.plugin.view.sel()
+		data = self.plugin.view.substr(selection[0])
 		if not data:
-			data = self.view.substr(allcontent)
+			data = self.plugin.view.substr(allcontent)
 			selection.add(allcontent)
 
 		return data
 
 	def getFileName(self):
-		window = self.view.window()
+		window = self.plugin.view.window()
 		data = window.extract_variables()
 		return data.get("file_name","Sample file name")
 
@@ -38,16 +35,16 @@ class SublimeApi(sublime_plugin.TextCommand):
 		sublime.set_timeout_async(callable_method,delay)
 
 	def inputText(self,title,place_holder,on_done,on_cancel=None,on_change=None):
-		window = self.view.window()
+		window = self.plugin.view.window()
 		window.show_input_panel(title,place_holder,on_done,on_change,on_cancel)
 
 	def inputPassword(self,title,on_done,on_cancel=None,on_change=None):
-		window = self.view.window()
+		window = self.plugin.view.window()
 		panel = window.show_input_panel(title,"",on_done,on_change,on_cancel)
 		panel.settings().set("password", True) #only works for Sublime text 3 and 4
 
 	def selectFromList(self,items,on_select,place_holder,initial_index=0):
-		window = self.view.window()
+		window = self.plugin.view.window()
 		window.show_quick_panel(items,on_select,0,initial_index,None,place_holder)
 
 		
