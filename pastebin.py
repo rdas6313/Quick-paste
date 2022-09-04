@@ -163,7 +163,27 @@ class UserPasteCommand(CommonPasteCommand):
 		else:
 			self.helper.showErrorMessage(msg)
 
+	def on_paste_done(self,data):
+		is_success,msg = data
+		
+		try:
+			key = self.convert_response_msg_to_config_key(msg)
+			if key == ConfigType.USER_KEY:
+				self.config_obj.updateConfig(ConfigType.USER_KEY,"")
+				msg += self.configs.get(ConfigType.USER_KEY_REMOVED_MSG,None)
+		except:
+			pass
+		finally:
+			super().on_paste_done((is_success,msg))
 
+
+	def convert_response_msg_to_config_key(self,msg):
+		msgs = msg.split("\n")
+		msgs = msgs[1].split(",")
+		res_msg = msgs[1].strip()
+		msgs = res_msg.split(" ")
+		res_msg = msgs[1].strip()
+		return res_msg
 
 	def on_start_command(self):
 		user_key = self.configs.get(ConfigType.USER_KEY,None)

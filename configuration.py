@@ -27,6 +27,7 @@ class ConfigType:
 	USER_NAME_INPUT_PLACEHOLDER = "user_name_input_placeholder_msg"
 	PASSWORD_INPUT_CAPTION = "password_input_caption"
 	UNKNOWN_ERROR_MSG = "unknown_error_msg"
+	USER_KEY_REMOVED_MSG = "user_key_removed_msg"
 
 
 class Configuration:
