@@ -16,6 +16,17 @@ class ConfigType:
 	SUCCESS_PASTE_MSG = "success_paste_msg"
 	USER_KEY = "api_user_key"
 	LOGIN_URL = "user_login_url" 
+	EMPTY_PASTE_NAME = "empty_paste_name_msg"
+	CANCEL_PASTE = "cancel_pasting_msg"
+	PASTE_NAME_INPUT_PLACEHOLDER = "paste_name_input_placholder_msg"
+	PASTE_NAME_CAPTION = "paste_name_caption"
+	SELECT_FROM_ITEMS = "select_from_items_msg"
+	EMPTY_USER_NAME = "empty_user_name_msg"
+	EMPTY_PASSWORD = "empty_password_msg"
+	USER_NAME_CAPTION = "user_name_caption"
+	USER_NAME_INPUT_PLACEHOLDER = "user_name_input_placeholder_msg"
+	PASSWORD_INPUT_CAPTION = "password_input_caption"
+	UNKNOWN_ERROR_MSG = "unknown_error_msg"
 
 
 class Configuration:

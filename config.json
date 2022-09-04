@@ -9,5 +9,16 @@
     "redirect_error_msg": "Hummm! Looks like a redirect response. contact developer or raise a issue. \n", 
     "server_error_msg": "Hummm! Looks like a server error. Try again later. \n", 
     "success_paste_msg": "\n\n Url already copied to clipboard. Paste it using ctrl-v.", 
-    "user_login_url": "/api/api_login.php"
+    "user_login_url": "/api/api_login.php",
+    "empty_paste_name_msg" : "Paste name is empty. So Default name '{}' will be used.",
+    "cancel_pasting_msg" : "Hummm! So you choose not to paste now.",
+    "paste_name_input_placholder_msg" : "Enter paste title",
+    "paste_name_caption" : "Paste name",
+    "select_from_items_msg" : "Select from list",
+    "empty_user_name_msg" : "User name field can't be empty",
+    "empty_password_msg" : "Password field can't be empty",
+    "user_name_caption" : "User name",
+    "user_name_input_placeholder_msg" : "Enter pastebin user name",
+    "password_input_caption" : "Password",
+    "unknown_error_msg" : "Unknown Error occured"
 }

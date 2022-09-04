@@ -61,7 +61,7 @@ class CommonPasteCommand(sublime_plugin.TextCommand):
 		except RuntimeError as e:
 			self.log.error("{}: {}".format(type(self).__name__,e))
 		except:
-			self.log.error("{}: Unknown Error".format(type(self).__name__))
+			self.log.error("{}: {}".format(type(self).__name__),self.configs.get(ConfigType.UNKNOWN_ERROR_MSG,None))
 
 
 
@@ -74,34 +74,34 @@ class GuestPasteCommand(CommonPasteCommand):
 
 class UserPasteCommand(CommonPasteCommand):
 
-	__CLASS_NAME = "UserPaste"
-
 	def on_paste_name(self,data):
 		if not data:
-			self.helper.showMessage("Paste name is empty. So Default name '{}' will be used.".format(self.data["name"]))
+			data = self.helper.getFileName()
+			self.helper.showMessage(self.configs.get(ConfigType.EMPTY_PASTE_NAME,None).format(data))
+			
 		self.data["name"] = data
-		self.helper.selectFromList(self.expire,self.on_select_expire,"Select from list")
-		
+		self.collectUserPrefs()
 
 	def on_select_expire(self,index):
 		if index < 0:
-			self.helper.showMessage("Hummm! So you choose not to paste now.")
+			self.helper.showMessage(self.configs.get(ConfigType.CANCEL_PASTE,None))
 			return
 		key = self.expire[index]
 		value = self.PASTE_EXPIRE[key]
 		self.data["expire"] = value
-		self.helper.selectFromList(self.vis,self.on_select_visibility,"Select from list")
+		self.collectUserPrefs()
 
 	def on_select_visibility(self,index):
 		if index < 0:
-			self.helper.showMessage("Hummm! So you choose not to paste now.")
+			self.helper.showMessage(self.configs.get(ConfigType.CANCEL_PASTE))
 			return
 		key = self.vis[index]
 		value = self.PASTE_VISIBILITY[key]
 		self.data["vis"] = value
-		self.sendContent()
+		self.collectUserPrefs()
 
-	def sendContent(self):
+
+	def on_collect_prefs(self):
 		self.remote.userPush(
 			self.on_paste_done,
 			self.data["user_key"],
@@ -111,20 +111,50 @@ class UserPasteCommand(CommonPasteCommand):
 			self.data["vis"]
 		)
 
+	def prepareToSend(self):
+		self.data["code"] = self.helper.getContent()
+		file_name = self.helper.getFileName() if self.helper.getFileName() else self.configs.get(ConfigType.PASTE_NAME_INPUT_PLACEHOLDER,None)
+		self.expire = list(self.PASTE_EXPIRE.keys())
+		self.vis = list(self.PASTE_VISIBILITY.keys())
+		self.collectUserPrefs(file_name)
+
+	def collectUserPrefs(self,file_name=None):
+
+		if not self.data.get("name",None):
+			self.helper.inputText(self.configs.get(ConfigType.PASTE_NAME_CAPTION,None),file_name,self.on_paste_name)
+			return
+		elif not self.data.get("expire",None):
+			self.helper.selectFromList(self.expire,self.on_select_expire,self.configs.get(ConfigType.SELECT_FROM_ITEMS,None))
+			return
+		elif not self.data.get("vis",None):
+			self.helper.selectFromList(self.vis,self.on_select_visibility,self.configs.get(ConfigType.SELECT_FROM_ITEMS,None))
+			return
+
+		self.on_collect_prefs()
+		
 
 	def on_user_name(self,name):
 		if not name:
-			self.helper.showErrorMessage("User name field can't be empty")
+			self.helper.showErrorMessage(self.configs.get(ConfigType.EMPTY_USER_NAME,None))
 			return
 		self.data["user_name"] = name 
-		self.helper.inputPassword("Password",self.on_password)
+		self.generateUserToken()
 		
-
 	def on_password(self,password):
 		if not password:
-			self.helper.showErrorMessage("Password field can't be empty")
+			self.helper.showErrorMessage(self.configs.get(ConfigType.EMPTY_PASSWORD,None))
 			return
 		self.data["password"] = password
+		self.generateUserToken()
+
+	def generateUserToken(self):
+		if not self.data.get("user_name",None):
+			self.helper.inputText(self.configs.get(ConfigType.USER_NAME_CAPTION,None),self.configs.get(ConfigType.USER_NAME_INPUT_PLACEHOLDER,None),self.on_user_name)
+			return
+		elif not self.data.get("password",None):
+			self.helper.inputPassword(self.configs.get(ConfigType.PASSWORD_INPUT_CAPTION,None),self.on_password)
+			return
+		
 		is_success,msg = self.remote.getUserToken(self.data["user_name"],self.data["password"])
 		if is_success:
 			self.data["user_key"] = msg
@@ -133,22 +163,18 @@ class UserPasteCommand(CommonPasteCommand):
 		else:
 			self.helper.showErrorMessage(msg)
 
-	def prepareToSend(self):
-		self.data["code"] = self.helper.getContent()
-		self.data["name"] = self.helper.getFileName()
-		self.expire = list(self.PASTE_EXPIRE.keys())
-		self.vis = list(self.PASTE_VISIBILITY.keys())
-		self.helper.inputText("Paste name",self.data.get("name","Enter paste name"),self.on_paste_name)
+
 
 	def on_start_command(self):
 		user_key = self.configs.get(ConfigType.USER_KEY,None)
 		self.data = {}
 		if not user_key:
-			self.helper.inputText("User name","Enter pastebin user name",self.on_user_name)
+			self.generateUserToken()
 			return
 
 		self.data["user_key"] = user_key
 		self.prepareToSend()
+		
 
 
 	
