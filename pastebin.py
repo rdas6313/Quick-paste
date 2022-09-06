@@ -4,25 +4,7 @@ from .configuration import *
 from .logger import Logger
 import sublime_plugin
 
-class CommonPasteCommand(sublime_plugin.TextCommand):
-
-	PASTE_EXPIRE = {
-		"Expire never" : PasteExpire.NEVER,
-		"Expire in 1 year" : PasteExpire.YEAR,
-		"Expire in 6 months" : PasteExpire.HALF_YEAR,
-		"Expire in 1 month" : PasteExpire.MONTH,
-		"Expire in 15 days" : PasteExpire.HALF_MONTH,
-		"Expire in 1 weeks" : PasteExpire.WEEK,
-		"Expire in 1 day" : PasteExpire.DAY,
-		"Expire in 1 hour" : PasteExpire.HOUR,
-		"Expire in 1 minute" : PasteExpire.MINUTE
-	}
-
-	PASTE_VISIBILITY = {
-		"Public paste" : PasteType.PUBLIC,
-		"Private paste" : PasteType.PRIVATE,
-		"Unlisted paste" : PasteType.UNLISTED
-	}
+class PasteTool(sublime_plugin.TextCommand):
 
 	def __init(self):
 		self.log = Logger()
@@ -35,15 +17,39 @@ class CommonPasteCommand(sublime_plugin.TextCommand):
 		self.config_obj = Configuration()
 		self.configs = self.config_obj.getConfig()
 
-	def on_paste_done(self,data):
-		is_success,msg = data
-		if(is_success):
-			success_msg = msg + self.configs.get(ConfigType.SUCCESS_PASTE_MSG,None)
-			self.helper.copy(msg)
-			self.helper.showMessage(success_msg)
+	def on_user_name(self,name):
+		if not name:
+			self.helper.showErrorMessage(self.configs.get(ConfigType.EMPTY_USER_NAME,None))
+			return
+		self.data["user_name"] = name 
+		self.generateUserToken()
+		
+	def on_password(self,password):
+		if not password:
+			self.helper.showErrorMessage(self.configs.get(ConfigType.EMPTY_PASSWORD,None))
+			return
+		self.data["password"] = password
+		self.generateUserToken()
+
+	def on_user_token(self,is_generated):
+		pass
+
+	def generateUserToken(self):
+		if not self.data.get("user_name",None):
+			self.helper.inputText(self.configs.get(ConfigType.USER_NAME_CAPTION,None),self.configs.get(ConfigType.USER_NAME_INPUT_PLACEHOLDER,None),self.on_user_name)
+			return
+		elif not self.data.get("password",None):
+			self.helper.inputPassword(self.configs.get(ConfigType.PASSWORD_INPUT_CAPTION,None),self.on_password)
+			return
+		
+		is_success,msg = self.remote.getUserToken(self.data["user_name"],self.data["password"])
+		if is_success:
+			self.data["user_key"] = msg
+			self.config_obj.updateConfig(ConfigType.USER_KEY,msg)
+			self.on_user_token(True)
 		else:
 			self.helper.showErrorMessage(msg)
-
+			self.on_user_token(False)
 
 	def on_start_command(self):
 		pass
@@ -65,14 +71,45 @@ class CommonPasteCommand(sublime_plugin.TextCommand):
 
 
 
-class GuestPasteCommand(CommonPasteCommand):
+class CommonPaste(PasteTool):
+
+	PASTE_EXPIRE = {
+		"Expire never" : PasteExpire.NEVER,
+		"Expire in 1 year" : PasteExpire.YEAR,
+		"Expire in 6 months" : PasteExpire.HALF_YEAR,
+		"Expire in 1 month" : PasteExpire.MONTH,
+		"Expire in 15 days" : PasteExpire.HALF_MONTH,
+		"Expire in 1 weeks" : PasteExpire.WEEK,
+		"Expire in 1 day" : PasteExpire.DAY,
+		"Expire in 1 hour" : PasteExpire.HOUR,
+		"Expire in 1 minute" : PasteExpire.MINUTE
+	}
+
+	PASTE_VISIBILITY = {
+		"Public paste" : PasteType.PUBLIC,
+		"Private paste" : PasteType.PRIVATE,
+		"Unlisted paste" : PasteType.UNLISTED
+	}
+
+	
+	def on_paste_done(self,data):
+		is_success,msg = data
+		if(is_success):
+			success_msg = msg + self.configs.get(ConfigType.SUCCESS_PASTE_MSG,None)
+			self.helper.copy(msg)
+			self.helper.showMessage(success_msg)
+		else:
+			self.helper.showErrorMessage(msg)
+
+
+class GuestPasteCommand(CommonPaste):
 		
 	def on_start_command(self):
 		paste_code = self.helper.getContent()
 		paste_name = self.helper.getFileName()
 		self.remote.guestPush(paste_code,self.on_paste_done,paste_name)
 
-class UserPasteCommand(CommonPasteCommand):
+class UserPasteCommand(CommonPaste):
 
 	def on_paste_name(self,data):
 		if not data:
@@ -131,37 +168,12 @@ class UserPasteCommand(CommonPasteCommand):
 			return
 
 		self.on_collect_prefs()
-		
+	
 
-	def on_user_name(self,name):
-		if not name:
-			self.helper.showErrorMessage(self.configs.get(ConfigType.EMPTY_USER_NAME,None))
+	def on_user_token(self,generated):
+		if not generated:
 			return
-		self.data["user_name"] = name 
-		self.generateUserToken()
-		
-	def on_password(self,password):
-		if not password:
-			self.helper.showErrorMessage(self.configs.get(ConfigType.EMPTY_PASSWORD,None))
-			return
-		self.data["password"] = password
-		self.generateUserToken()
-
-	def generateUserToken(self):
-		if not self.data.get("user_name",None):
-			self.helper.inputText(self.configs.get(ConfigType.USER_NAME_CAPTION,None),self.configs.get(ConfigType.USER_NAME_INPUT_PLACEHOLDER,None),self.on_user_name)
-			return
-		elif not self.data.get("password",None):
-			self.helper.inputPassword(self.configs.get(ConfigType.PASSWORD_INPUT_CAPTION,None),self.on_password)
-			return
-		
-		is_success,msg = self.remote.getUserToken(self.data["user_name"],self.data["password"])
-		if is_success:
-			self.data["user_key"] = msg
-			self.config_obj.updateConfig(ConfigType.USER_KEY,msg)
-			self.prepareToSend()
-		else:
-			self.helper.showErrorMessage(msg)
+		self.prepareToSend()
 
 	def on_paste_done(self,data):
 		is_success,msg = data
@@ -189,7 +201,6 @@ class UserPasteCommand(CommonPasteCommand):
 
 		self.data["user_key"] = user_key
 		self.prepareToSend()
-		
 
 
 	

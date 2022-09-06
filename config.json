@@ -1,6 +1,6 @@
 {
     "api_dev_key": "AIKXQEl1Z3pZhZO1q7afM7LOrAkZ5uE3", 
-    "api_user_key": "1923d360f82e7d6f3ac49450a2c95fe7", 
+    "api_user_key": "", 
     "base_url": "pastebin.com", 
     "cancel_pasting_msg": "Hummm! So you choose not to paste now.", 
     "client_error_msg": "Hummm! Looks like a client error. Try again later. \n", 
