@@ -178,16 +178,15 @@ class PastebinDriver():
 
 
 	def getUserList(self,callable,token,limit="1000"):
-		print("GET USER LIST : {}".format(type(callable).__name__))
-		if not token or not callable:
-			callable((False,"User token or callable method can't be empty")) 
+		
+		if not callable or (type(callable).__name__ != 'method' and type(callable).__name__ != 'function'): 
+			return False
+		elif not token:
+			callable((False,"User token can't be empty")) 
 			return
-		elif type(token).__name__ != 'str' or (type(callable).__name__ != 'method' and type(callable).__name__ != 'function') or type(limit).__name__ != 'str':
-			if type(callable).__name__ != 'method' and type(callable).__name__ != 'function' : 
-				return False
-			callable((False,"User token and limit must be string and callable must be function"))
+		elif type(limit).__name__ != 'str' or type(token).__name__ != 'str':
+			callable((False,"User token and limit must be string"))
 			return
-
 
 		data = {
 			Pastebin.API_OPTION : "list",
