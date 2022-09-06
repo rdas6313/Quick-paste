@@ -29,6 +29,7 @@ class ConfigType:
 	UNKNOWN_ERROR_MSG = "unknown_error_msg"
 	USER_KEY_REMOVED_MSG = "user_key_removed_msg"
 	USER_LIST_URL = PASTE_URL
+	GET_USER_PASTE = "fetch_user_paste_url"
 
 
 class Configuration:

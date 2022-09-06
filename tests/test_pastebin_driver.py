@@ -156,12 +156,54 @@ class TestPastebinDriver(DeferrableTestCase):
 	def test_getUserList_different_type_token(self):
 		token = 5221
 		limit = "10"
-		self.remote.getUserList(self.on_user_list_invalid_token,token,limit)
+		#self.remote.getUserList(self.on_user_list_invalid_token,token,limit)
 
 	def test_getUserList_differenty_type_callable(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = "10"
-		self.assertFalse(self.remote.getUserList("self.on_user_list_invalid_token",token,limit))
+		#self.assertFalse(self.remote.getUserList("self.on_user_list_invalid_token",token,limit))
 
+	def test_getUserPaste(self):
+		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		paste_key = "6HaZsSay"
+		self.remote.getUserPaste(self.on_user_paste,token,paste_key)
 
+	def on_user_paste(self,data):
+		success,msg = data
+		self.assertTrue(success)
+
+	def test_getUserPaste_invalid_paste_key(self):
+		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		paste_key = "allkhwa"
+		self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)
+
+	def on_user_paste_wrong(self,data):
+		success,msg = data
+		print(msg)
+		self.assertFalse(success)
+
+	def test_getUserPaste_invalid_token(self):
+		token = "1923d360f82e7d6f3ac49450a2c95fe"
+		paste_key = "6HaZsSay"
+		self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)
+
+	def test_getUserPaste_empty_paste_key(self):
+		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		paste_key = ""
+		self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)	
+
+	def test_getUserPaste_different_type_paste_key(self):
+		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		paste_key = 12344
+		self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)
+
+	def test_getUserPaste_different_type_callable(self):
+		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		paste_key = 12344
+		self.assertFalse(self.remote.getUserPaste("self.on_user_paste_wrong",token,paste_key))
+
+	def test_getUserPaste_empty_callable(self):
+		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		paste_key = "12344"
+		self.assertFalse(self.remote.getUserPaste(None,token,paste_key))
 

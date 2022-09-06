@@ -21,5 +21,6 @@
     "user_key_removed_msg": "\n\nWe have removed your user key since it was invalid. Please try again.", 
     "user_login_url": "/api/api_login.php", 
     "user_name_caption": "User name", 
-    "user_name_input_placeholder_msg": "Enter pastebin user name"
+    "user_name_input_placeholder_msg": "Enter pastebin user name",
+    "fetch_user_paste_url" : "/api/api_raw.php"
 }

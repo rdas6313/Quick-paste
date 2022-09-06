@@ -38,6 +38,7 @@ class Pastebin:
 	API_USER_NAME = "api_user_name"
 	API_USER_PASSWORD = "api_user_password"
 	API_RESULT_LIMIT = "api_results_limit"
+	API_PASTE_KEY = "api_paste_key"
 
 class PastebinDriver():
 
@@ -198,6 +199,30 @@ class PastebinDriver():
 		path = self.configs.get(ConfigType.USER_LIST_URL,ConfigType.USER_LIST_URL)
 		is_success,res_msg = self.__postToServer(data,path)
 		callable((is_success,res_msg))
+
+	def getUserPaste(self,callable,token,paste_key):
+		
+		if not callable or (type(callable).__name__ != 'method' and type(callable).__name__ != 'function'): 
+			return False
+		elif not token or not paste_key:
+			callable((False,"User token, paste key or callable method can't be empty")) 
+			return
+		elif type(paste_key).__name__ != 'str' or type(token).__name__ != 'str':
+			callable((False,"User token and paste key must be string"))
+			return
+		
+
+		data = {
+			Pastebin.API_OPTION : "show_paste",
+			Pastebin.API_USER_KEY : token,
+			Pastebin.API_PASTE_KEY : paste_key,
+			ConfigType.API_KEY : self.configs.get(ConfigType.API_KEY,ConfigType.API_KEY)
+		}
+
+		path = self.configs.get(ConfigType.GET_USER_PASTE,ConfigType.GET_USER_PASTE)
+		is_success,msg = self.__postToServer(data,path)
+		callable((is_success,msg))
+
 
 
 		
