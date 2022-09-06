@@ -28,6 +28,7 @@ class ConfigType:
 	PASSWORD_INPUT_CAPTION = "password_input_caption"
 	UNKNOWN_ERROR_MSG = "unknown_error_msg"
 	USER_KEY_REMOVED_MSG = "user_key_removed_msg"
+	USER_LIST_URL = PASTE_URL
 
 
 class Configuration:

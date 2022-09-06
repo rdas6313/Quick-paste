@@ -37,6 +37,7 @@ class Pastebin:
 	API_OPTION = "api_option"
 	API_USER_NAME = "api_user_name"
 	API_USER_PASSWORD = "api_user_password"
+	API_RESULT_LIMIT = "api_results_limit"
 
 class PastebinDriver():
 
@@ -171,6 +172,30 @@ class PastebinDriver():
 
 		path = self.configs.get(ConfigType.PASTE_URL,ConfigType.PASTE_URL)	
 
+		is_success,res_msg = self.__postToServer(data,path)
+		callable((is_success,res_msg))
+
+
+	def getUserList(self,callable,token,limit="1000"):
+		print("GET USER LIST : {}".format(type(callable).__name__))
+		if not token or not callable:
+			callable((False,"User token or callable method can't be empty")) 
+			return
+		elif type(token).__name__ != 'str' or (type(callable).__name__ != 'method' and type(callable).__name__ != 'function') or type(limit).__name__ != 'str':
+			if type(callable).__name__ != 'method' and type(callable).__name__ != 'function' : 
+				return False
+			callable((False,"User token and limit must be string and callable must be function"))
+			return
+
+
+		data = {
+			Pastebin.API_OPTION : "list",
+			Pastebin.API_RESULT_LIMIT : limit,
+			Pastebin.API_USER_KEY : token,
+			ConfigType.API_KEY : self.configs.get(ConfigType.API_KEY,ConfigType.API_KEY)
+		}
+
+		path = self.configs.get(ConfigType.USER_LIST_URL,ConfigType.USER_LIST_URL)
 		is_success,res_msg = self.__postToServer(data,path)
 		callable((is_success,res_msg))
 
