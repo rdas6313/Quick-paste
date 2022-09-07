@@ -177,7 +177,7 @@ class PastebinDriver():
 		callable((is_success,res_msg))
 
 
-	def getUserList(self,callable,token,limit="1000"):
+	def getUserPasteList(self,callable,token,limit="1000"):
 		
 		if not callable or (type(callable).__name__ != 'method' and type(callable).__name__ != 'function'): 
 			return False

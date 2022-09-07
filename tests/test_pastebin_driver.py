@@ -129,49 +129,49 @@ class TestPastebinDriver(DeferrableTestCase):
 		vis = 1
 		#self.remote.userPush(self.on_wrong_done,token,code,name,expire,vis)
 
-	def test_getUserList(self):
+	def test_getUserPasteList(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = "5"
-		self.remote.getUserList(self.on_user_list,token,limit)
+		self.remote.getUserPasteList(self.on_user_list,token,limit)
 
 	def on_user_list(self,data):
 		success,msg = data
 		print(data)
 		self.assertTrue(success)
 
-	def test_getUserList_Invalid_Token(self):
+	def test_getUserPasteList_Invalid_Token(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe"
 		limit = "5"
-		self.remote.getUserList(self.on_user_list_error,token,limit)
+		self.remote.getUserPasteList(self.on_user_list_error,token,limit)
 
 	def on_user_list_error(self,data):
 		success,msg = data
 		self.assertFalse(success)
 
-	def test_getUserList_invalid_limit(self):
+	def test_getUserPasteList_invalid_limit(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = "102000"
-		self.remote.getUserList(self.on_user_list_error,token,limit)
+		self.remote.getUserPasteList(self.on_user_list_error,token,limit)
 
-	def test_getUserList_different_type_token(self):
+	def test_getUserPasteList_different_type_token(self):
 		token = 5221
 		limit = "10"
-		self.remote.getUserList(self.on_user_list_error,token,limit)
+		self.remote.getUserPasteList(self.on_user_list_error,token,limit)
 
-	def test_getUserList_differenty_type_callable(self):
+	def test_getUserPasteList_differenty_type_callable(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = "10"
-		self.assertFalse(self.remote.getUserList("self.on_user_list_error",token,limit))
+		self.assertFalse(self.remote.getUserPasteList("self.on_user_list_error",token,limit))
 
-	def test_getUserList_empty_callable(self):
+	def test_getUserPasteList_empty_callable(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = "10"
-		self.assertFalse(self.remote.getUserList(None,token,limit))
+		self.assertFalse(self.remote.getUserPasteList(None,token,limit))
 
-	def test_getUserList_different_type_limit(self):
+	def test_getUserPasteList_different_type_limit(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = 10
-		self.remote.getUserList(self.on_user_list_error,token,limit)
+		self.remote.getUserPasteList(self.on_user_list_error,token,limit)
 
 	def test_getUserPaste(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
