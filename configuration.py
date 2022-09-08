@@ -30,6 +30,9 @@ class ConfigType:
 	USER_KEY_REMOVED_MSG = "user_key_removed_msg"
 	USER_LIST_URL = PASTE_URL
 	GET_USER_PASTE = "fetch_user_paste_url"
+	RAISE_ISSUE_MSG = "raise_issue_msg"
+	EMPTY_PASTE_LIST = "empty_paste_list_msg"
+	NO_TITLE = "no_title_found"
 
 
 class Configuration:

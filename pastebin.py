@@ -233,7 +233,7 @@ class UserPastesCommand(PasteTool):
 			error = True
 		finally:
 			if error: 
-				self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+				self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
 				
 	
 	def on_get_paste_list(self,data):
@@ -248,17 +248,17 @@ class UserPastesCommand(PasteTool):
 
 	def on_paste_list(self,paste_list):
 		if not paste_list:
-			self.helper.showErrorMessage("No Paste Found so far.")
+			self.helper.showErrorMessage(self.configs.get(ConfigType.EMPTY_PASTE_LIST,None))
 			return
 
 		paste_items = []
 		self.data['paste_list'] = paste_list
 		for item in paste_list:
 			title = item.get('paste_title',None)
-			paste_items.append(title if title else "No title found")
+			paste_items.append(title if title else self.configs.get(ConfigType.NO_TITLE,None))
 			item['index'] = len(paste_items)-1
 		self.log.debug("List - {}".format(paste_items))
-		self.helper.selectFromList(paste_items,self.on_select,"Select from list")
+		self.helper.selectFromList(paste_items,self.on_select,self.configs.get(ConfigType.SELECT_FROM_ITEMS,None))
 
 	def on_get_paste(self,data):
 		is_success,msg = data 
@@ -298,7 +298,7 @@ class UserPastesCommand(PasteTool):
 			error = True		
 		finally:
 			if error:
-				self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+				self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
 
 
 	def parse_xml(self,xml):
@@ -313,7 +313,7 @@ class UserPastesCommand(PasteTool):
 				paste_list.append(paste_item)
 		except ET.ParseError as e:
 			self.log.error("{}: {}".format(type(self).__name__,e))
-			self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+			self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
 		finally:
 			return paste_list
 
@@ -355,6 +355,6 @@ class PasteContentCommand(PasteTool):
 			self.log.error("{}: {}".format(type(self).__name__,self.configs.get(ConfigType.UNKNOWN_ERROR_MSG,None)))
 		finally:
 			if error:
-				self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+				self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
 	
 
