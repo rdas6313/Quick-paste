@@ -3,10 +3,11 @@ from .pastebin_remote import *
 from .configuration import *
 from .logger import Logger
 import sublime_plugin
+import xml.etree.ElementTree as ET
 
 class PasteTool(sublime_plugin.TextCommand):
 
-	def __init(self):
+	def init(self):
 		self.log = Logger()
 		self.helper = SublimeApiHelper(self)
 		self.configs = {}
@@ -56,8 +57,7 @@ class PasteTool(sublime_plugin.TextCommand):
 
 	def run(self,edit):
 		try:
-			
-			self.__init()	
+			self.init()	
 			self.helper.runInBackground(self.on_start_command)
 
 		except ImportError as e:
@@ -67,7 +67,7 @@ class PasteTool(sublime_plugin.TextCommand):
 		except RuntimeError as e:
 			self.log.error("{}: {}".format(type(self).__name__,e))
 		except:
-			self.log.error("{}: {}".format(type(self).__name__),self.configs.get(ConfigType.UNKNOWN_ERROR_MSG,None))
+			self.log.error("{}: {}".format(type(self).__name__,self.configs.get(ConfigType.UNKNOWN_ERROR_MSG,None)))
 
 
 
@@ -168,7 +168,7 @@ class UserPasteCommand(CommonPaste):
 			return
 
 		self.on_collect_prefs()
-	
+		
 
 	def on_user_token(self,generated):
 		if not generated:
@@ -203,4 +203,145 @@ class UserPasteCommand(CommonPaste):
 		self.prepareToSend()
 
 
+class UserPastesCommand(PasteTool):
+
+	def on_start_command(self):
+		user_key = self.configs.get(ConfigType.USER_KEY,None)
+		self.data = {}
+		if not user_key:
+			self.generateUserToken()
+			return
+
+		self.data["user_key"] = user_key
+		self.startProcessing()
+
+	def startProcessing(self):
+		limit = "30"
+		user_key = self.data["user_key"]
+		self.remote.getUserPasteList(self.on_get_paste_list,user_key,limit)
 	
+	def on_get_paste_list(self,data):
+		is_success,ret_data = data
+		if is_success:
+			xml_list = ret_data
+			paste_list = self.parse_xml(xml_list)
+			self.on_paste_list(paste_list)
+		else:
+			msg = ret_data
+			self.helper.showErrorMessage(msg)
+
+	def on_paste_list(self,paste_list):
+		if not paste_list:
+			self.helper.showErrorMessage("No Paste Found so far.")
+			return
+
+		paste_items = []
+		self.data['paste_list'] = paste_list
+		for item in paste_list:
+			title = item.get('paste_title',None)
+			paste_items.append(title if title else "No title found")
+			item['index'] = len(paste_items)-1
+		self.log.debug("List - {}".format(paste_items))
+		self.helper.selectFromList(paste_items,self.on_select,"Select from list")
+
+	def on_get_paste(self,data):
+		is_success,msg = data 
+		if not is_success:
+			self.helper.showErrorMessage(msg)
+			return
+		title = self.data.get('selected_paste_title',None)
+		self.helper.execute('paste_content',
+		{
+			"content" : msg,
+			"file_name" : title,
+			"format" : ""
+		})
+
+
+	def on_select(self,index):
+		error = False
+		try:
+			paste_list = self.data['paste_list']
+			key = paste_list[index]['paste_key']
+			self.data['selected_paste_title'] = paste_list[index]['paste_title']
+			#get the format from here
+			token = self.data['user_key']
+			self.remote.getUserPaste(self.on_get_paste,token,key)
+
+			#if not self.remote.getUserPaste(self.on_get_paste,token,key):
+				#self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+				#self.log.error("{} :- callable should be method or function.".format(type(self).__name__))
+
+		except KeyError as e:
+			self.log.error("{}: {}".format(type(self).__name__,e))
+			error = True
+		except IndexError as e:
+			self.log.error("{}: {}".format(type(self).__name__,e))
+			error = True
+		except ValueError as e:
+			self.log.error("{}: {}".format(type(self).__name__,e))
+			error = True
+		except:
+			self.log.error("{}: Unknown error happend in on_select method".format(type(self).__name__))			
+		finally:
+			if error:
+				self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+
+
+	def parse_xml(self,xml):
+		paste_list = []
+		try:
+			xml = '<Data>' + xml + '</Data>'
+			root = ET.fromstring(xml)
+			for paste in root:
+				paste_item = {}
+				for item in paste:
+					paste_item[item.tag] = item.text
+				paste_list.append(paste_item)
+		except ET.ParseError as e:
+			self.log.error("{}: {}".format(type(self).__name__,e))
+			self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+		finally:
+			return paste_list
+
+	def on_user_token(self,generated):
+		if not generated:
+			return
+		self.startProcessing()
+
+
+class PasteContentCommand(PasteTool):
+	
+	def run(self,edit,**args):
+		error = False
+		try:
+
+			self.edit = edit
+			self.init()
+			content = args.get("content",None) if args.get("content",None) else ""
+			file_name = args.get("file_name",None) if args.get("file_name",None) else "Temp file"
+			syntax = args.get("format",None) if args.get("format",None) else ""
+			if not self.helper.createNewFile(file_name,syntax,content):
+				raise ValueError("file name, syntax and content must be string.")
+			
+
+		except ImportError as e:
+			self.log.error("{}: {}".format(type(self).__name__,e))
+			error = True
+		except FileNotFoundError as e:
+			error = True
+			self.log.error("{}: {}".format(type(self).__name__,e))
+		except RuntimeError as e:
+			error = True
+			self.log.error("{}: {}".format(type(self).__name__,e))
+		except ValueError as e:
+			error = True
+			self.log.error("{}: {}".format(type(self).__name__,e))
+		except:
+			error = True
+			self.log.error("{}: {}".format(type(self).__name__,self.configs.get(ConfigType.UNKNOWN_ERROR_MSG,None)))
+		finally:
+			if error:
+				self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+	
+

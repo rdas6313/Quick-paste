@@ -1,12 +1,13 @@
 {
     "api_dev_key": "AIKXQEl1Z3pZhZO1q7afM7LOrAkZ5uE3", 
-    "api_user_key": "", 
+    "api_user_key": "f06d910db7fbc3c007f011bac975651b", 
     "base_url": "pastebin.com", 
     "cancel_pasting_msg": "Hummm! So you choose not to paste now.", 
     "client_error_msg": "Hummm! Looks like a client error. Try again later. \n", 
     "empty_password_msg": "Password field can't be empty", 
     "empty_paste_name_msg": "Paste name is empty. So Default name '{}' will be used.", 
     "empty_user_name_msg": "User name field can't be empty", 
+    "fetch_user_paste_url": "/api/api_raw.php", 
     "general_error_msg": "Oops! Some unexpected error happened. \n", 
     "info_error_msg": "Hummm! Looks like a informational response. contact developer or raise a issue. \n", 
     "password_input_caption": "Password", 
@@ -21,6 +22,5 @@
     "user_key_removed_msg": "\n\nWe have removed your user key since it was invalid. Please try again.", 
     "user_login_url": "/api/api_login.php", 
     "user_name_caption": "User name", 
-    "user_name_input_placeholder_msg": "Enter pastebin user name",
-    "fetch_user_paste_url" : "/api/api_raw.php"
+    "user_name_input_placeholder_msg": "Enter pastebin user name"
 }

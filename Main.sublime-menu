@@ -18,6 +18,12 @@
             "caption" : "User paste",
             "command" : "user_paste"
         }
+        ,
+        {   
+            "id"      : "pastebin_3",
+            "caption" : "Your pastes",
+            "command" : "user_pastes"
+        }
         ]
     }
     ]

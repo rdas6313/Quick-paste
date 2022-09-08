@@ -1,5 +1,5 @@
 import sublime
-import sublime_plugin
+from .logger import Logger
 
 
 class SublimeApiHelper:
@@ -46,5 +46,18 @@ class SublimeApiHelper:
 	def selectFromList(self,items,on_select,place_holder,initial_index=0):
 		window = self.plugin.view.window()
 		window.show_quick_panel(items,on_select,0,initial_index,None,place_holder)
+
+	def createNewFile(self,file_name="",syntax="",content=""):
+		if type(file_name).__name__ != 'str' or type(syntax).__name__ != 'str' or type(content).__name__ != 'str':
+			return False
+		window = self.plugin.view.window()
+		edit = self.plugin.edit
+		view = window.new_file(syntax=syntax)
+		view.set_name(file_name)
+		view.insert(edit,0,content)
+		return True
+
+	def execute(self,cmd,args):
+		self.plugin.view.run_command(cmd,args)
 
 		
