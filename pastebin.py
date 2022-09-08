@@ -216,9 +216,25 @@ class UserPastesCommand(PasteTool):
 		self.startProcessing()
 
 	def startProcessing(self):
-		limit = "30"
-		user_key = self.data["user_key"]
-		self.remote.getUserPasteList(self.on_get_paste_list,user_key,limit)
+		try:
+			
+			limit = "30"
+			user_key = self.data["user_key"]
+			self.remote.getUserPasteList(self.on_get_paste_list,user_key,limit)
+
+		except ValueError as e:
+			self.log.error("{} : {}".format(type(self).__name__,e))
+			error = True 
+		except KeyError as e:
+			self.log.error("{} : {}".format(type(self).__name__,e))
+			error = True
+		except Exception as e:
+			self.log.error("{} : {}".format(type(self).__name__,e))
+			error = True
+		finally:
+			if error: 
+				self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
+				
 	
 	def on_get_paste_list(self,data):
 		is_success,ret_data = data
@@ -268,10 +284,6 @@ class UserPastesCommand(PasteTool):
 			token = self.data['user_key']
 			self.remote.getUserPaste(self.on_get_paste,token,key)
 
-			#if not self.remote.getUserPaste(self.on_get_paste,token,key):
-				#self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")
-				#self.log.error("{} :- callable should be method or function.".format(type(self).__name__))
-
 		except KeyError as e:
 			self.log.error("{}: {}".format(type(self).__name__,e))
 			error = True
@@ -281,8 +293,9 @@ class UserPastesCommand(PasteTool):
 		except ValueError as e:
 			self.log.error("{}: {}".format(type(self).__name__,e))
 			error = True
-		except:
-			self.log.error("{}: Unknown error happend in on_select method".format(type(self).__name__))			
+		except Exception as e:
+			self.log.error("{}: {}".format(type(self).__name__,e))
+			error = True		
 		finally:
 			if error:
 				self.helper.showErrorMessage("Hummm! It seems some error is occuring.Please raise a issue on github.")

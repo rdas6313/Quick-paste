@@ -180,13 +180,11 @@ class PastebinDriver():
 	def getUserPasteList(self,callable,token,limit="1000"):
 		
 		if not callable or (type(callable).__name__ != 'method' and type(callable).__name__ != 'function'): 
-			return False
+			raise ValueError("callable must be a method or function and should not be empty")
 		elif not token:
-			callable((False,"User token can't be empty")) 
-			return
+			raise ValueError("User token can't be empty")
 		elif type(limit).__name__ != 'str' or type(token).__name__ != 'str':
-			callable((False,"User token and limit must be string"))
-			return
+			raise ValueError("User token and limit must be string")
 
 		data = {
 			Pastebin.API_OPTION : "list",
@@ -202,15 +200,12 @@ class PastebinDriver():
 	def getUserPaste(self,callable,token,paste_key):
 		
 		if not callable or (type(callable).__name__ != 'method' and type(callable).__name__ != 'function'): 
-			return False
+			raise ValueError("callable must be a method or function and should not be empty")
 		elif not token or not paste_key:
-			callable((False,"User token, paste key or callable method can't be empty")) 
-			return
+			raise ValueError("User token, paste key or callable method can't be empty") 
 		elif type(paste_key).__name__ != 'str' or type(token).__name__ != 'str':
-			callable((False,"User token and paste key must be string"))
-			return
+			raise ValueError("User token and paste key must be string")
 		
-
 		data = {
 			Pastebin.API_OPTION : "show_paste",
 			Pastebin.API_USER_KEY : token,

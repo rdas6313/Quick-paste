@@ -130,7 +130,7 @@ class TestPastebinDriver(DeferrableTestCase):
 		#self.remote.userPush(self.on_wrong_done,token,code,name,expire,vis)
 
 	def test_getUserPasteList(self):
-		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		token = "f06d910db7fbc3c007f011bac975651b"
 		limit = "5"
 		self.remote.getUserPasteList(self.on_user_list,token,limit)
 
@@ -140,7 +140,7 @@ class TestPastebinDriver(DeferrableTestCase):
 		self.assertTrue(success)
 
 	def test_getUserPasteList_Invalid_Token(self):
-		token = "1923d360f82e7d6f3ac49450a2c95fe"
+		token = "f06d910db7fbc3c007f011bac975651"
 		limit = "5"
 		self.remote.getUserPasteList(self.on_user_list_error,token,limit)
 
@@ -149,41 +149,54 @@ class TestPastebinDriver(DeferrableTestCase):
 		self.assertFalse(success)
 
 	def test_getUserPasteList_invalid_limit(self):
-		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		token = "f06d910db7fbc3c007f011bac975651b"
 		limit = "102000"
 		self.remote.getUserPasteList(self.on_user_list_error,token,limit)
 
 	def test_getUserPasteList_different_type_token(self):
+		self.assertRaises(ValueError,self.list_different_type_token)
+
+	def list_different_type_token(self):
 		token = 5221
 		limit = "10"
 		self.remote.getUserPasteList(self.on_user_list_error,token,limit)
 
 	def test_getUserPasteList_differenty_type_callable(self):
+		self.assertRaises(ValueError,self.list_different_type_callable)
+
+	def list_different_type_callable(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = "10"
-		self.assertFalse(self.remote.getUserPasteList("self.on_user_list_error",token,limit))
+		self.remote.getUserPasteList("self.on_user_list_error",token,limit)
 
 	def test_getUserPasteList_empty_callable(self):
+		self.assertRaises(ValueError,self.list_empty_callable)
+
+	def list_empty_callable(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = "10"
-		self.assertFalse(self.remote.getUserPasteList(None,token,limit))
+		self.remote.getUserPasteList(None,token,limit)
 
 	def test_getUserPasteList_different_type_limit(self):
+		self.assertRaises(ValueError,self.differentTypeLimit)
+
+	def differentTypeLimit(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		limit = 10
 		self.remote.getUserPasteList(self.on_user_list_error,token,limit)
 
 	def test_getUserPaste(self):
-		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		token = "f06d910db7fbc3c007f011bac975651b"
 		paste_key = "6HaZsSay"
 		#self.remote.getUserPaste(self.on_user_paste,token,paste_key)
 
 	def on_user_paste(self,data):
 		success,msg = data
+		print(msg)
 		self.assertTrue(success)
 
 	def test_getUserPaste_invalid_paste_key(self):
-		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		token = "f06d910db7fbc3c007f011bac975651b"
 		paste_key = "allkhwa"
 		#self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)
 
@@ -198,22 +211,39 @@ class TestPastebinDriver(DeferrableTestCase):
 		#self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)
 
 	def test_getUserPaste_empty_paste_key(self):
+		pass 
+		#self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)	
+		#self.assertRaises(ValueError,self.emptyPasteKey)
+
+	def emptyPasteKey(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		paste_key = ""
-		#self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)	
-
-	def test_getUserPaste_different_type_paste_key(self):
-		token = "1923d360f82e7d6f3ac49450a2c95fe7"
-		paste_key = 12344
 		#self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)
 
-	def test_getUserPaste_different_type_callable(self):
+	def differentTypePaste(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		paste_key = 12344
-		#self.assertFalse(self.remote.getUserPaste("self.on_user_paste_wrong",token,paste_key))
+		self.remote.getUserPaste(self.on_user_paste_wrong,token,paste_key)
+
+	def test_getUserPaste_different_type_paste_key(self):
+		pass
+		#self.assertRaises(ValueError,self.differentTypePaste)
+
+	def test_getUserPaste_different_type_callable(self):
+		pass
+		#self.assertRaises(ValueError,self.differentTypeCallable)
+
+	def differentTypeCallable(self):
+		token = "1923d360f82e7d6f3ac49450a2c95fe7"
+		paste_key = 12344
+		self.remote.getUserPaste("self.on_user_paste_wrong",token,paste_key)
 
 	def test_getUserPaste_empty_callable(self):
+		#self.assertRaises(ValueError,self.emptyCallable)
+		pass 
+
+	def emptyCallable(self):
 		token = "1923d360f82e7d6f3ac49450a2c95fe7"
 		paste_key = "12344"
-		#self.assertFalse(self.remote.getUserPaste(None,token,paste_key))
+		self.remote.getUserPaste(None,token,paste_key)
 
