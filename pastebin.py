@@ -217,7 +217,7 @@ class UserPastesCommand(PasteTool):
 		self.startProcessing()
 
 	def startProcessing(self):
-		#declare error
+		error = False
 		try:
 			
 			limit = "30"
