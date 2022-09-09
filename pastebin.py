@@ -4,6 +4,7 @@ from .configuration import *
 from .logger import Logger
 import sublime_plugin
 import xml.etree.ElementTree as ET
+from .utility import *
 
 class PasteTool(sublime_plugin.TextCommand):
 
@@ -216,6 +217,7 @@ class UserPastesCommand(PasteTool):
 		self.startProcessing()
 
 	def startProcessing(self):
+		#declare error
 		try:
 			
 			limit = "30"
@@ -253,12 +255,23 @@ class UserPastesCommand(PasteTool):
 
 		paste_items = []
 		self.data['paste_list'] = paste_list
+		
+		for item in paste_list:
+			item['paste_date'] = int(item['paste_date']) if item['paste_date'] else item['paste_date']
+		paste_list.sort(reverse=True,key=self.sort_on)
+
 		for item in paste_list:
 			title = item.get('paste_title',None)
-			paste_items.append(title if title else self.configs.get(ConfigType.NO_TITLE,None))
+			title = title if title else self.configs.get(ConfigType.NO_TITLE,None)
+			date_time = timestamp_to_data_time(item.get('paste_date',None))
+			content = title + "   " + date_time
+			paste_items.append(content)
 			item['index'] = len(paste_items)-1
 		self.log.debug("List - {}".format(paste_items))
 		self.helper.selectFromList(paste_items,self.on_select,self.configs.get(ConfigType.SELECT_FROM_ITEMS,None))
+
+	def sort_on(self,item):
+		return item['paste_date']
 
 	def on_get_paste(self,data):
 		is_success,msg = data 
