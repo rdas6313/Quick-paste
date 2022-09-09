@@ -290,7 +290,7 @@ class UserPastesCommand(PasteTool):
 				self.log.error("{}: {}".format(type(self).__name__,e))
 
 		self.log.debug("List - {}".format(paste_items))
-		self.helper.selectFromList(paste_items,self.on_select,self.configs.get(ConfigType.SELECT_FROM_ITEMS,None))
+		self.helper.selectFromList(paste_items,self.on_select,self.configs.get(ConfigType.SELECT_FROM_ITEMS,None),-1)
 
 
 	def on_get_paste(self,data):
@@ -308,6 +308,9 @@ class UserPastesCommand(PasteTool):
 
 
 	def on_select(self,index):
+		if index == -1:
+			self.helper.showMessage(self.configs.get(ConfigType.CANCEL_PASTE,None))
+			return
 		error = False
 		try:
 			paste_list = self.data['paste_list']
