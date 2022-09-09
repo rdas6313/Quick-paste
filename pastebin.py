@@ -241,9 +241,23 @@ class UserPastesCommand(PasteTool):
 	def on_get_paste_list(self,data):
 		is_success,ret_data = data
 		if is_success:
-			xml_list = ret_data
-			paste_list = self.parse_xml(xml_list)
-			self.on_paste_list(paste_list)
+			error = False
+			try:
+				xml_list = ret_data
+				paste_list = parse_xml(xml_list)
+				self.on_paste_list(paste_list)
+			except ValueError as e:
+				self.helper.showErrorMessage(self.configs.get(ConfigType.EMPTY_PASTE_LIST,None))
+			except TypeError as e:
+				error = True
+				self.log.error("{}: {}".format(type(self).__name__,e))
+			except ET.ParseError as e:
+				error = True
+				self.log.error("{}: {}".format(type(self).__name__,e))
+			finally:
+				if error:
+					self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
+
 		else:
 			msg = ret_data
 			self.helper.showErrorMessage(msg)
@@ -258,20 +272,26 @@ class UserPastesCommand(PasteTool):
 		
 		for item in paste_list:
 			item['paste_date'] = int(item['paste_date']) if item['paste_date'] else item['paste_date']
-		paste_list.sort(reverse=True,key=self.sort_on)
+		paste_list.sort(reverse=True,key=sort_on)
 
 		for item in paste_list:
-			title = item.get('paste_title',None)
-			title = title if title else self.configs.get(ConfigType.NO_TITLE,None)
-			date_time = timestamp_to_data_time(item.get('paste_date',None))
-			content = title + "   " + date_time
-			paste_items.append(content)
-			item['index'] = len(paste_items)-1
+			try:
+				title = item.get('paste_title',None)
+				title = title if title else self.configs.get(ConfigType.NO_TITLE,None)
+				date_time = timestamp_to_data_time(item.get('paste_date',None))
+				content = title + "   " + date_time
+				paste_items.append(content)
+				item['index'] = len(paste_items)-1
+			except ValueError as e:
+				self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
+				self.log.error("{}: {}".format(type(self).__name__,e)) 
+			except TypeError as e:
+				self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
+				self.log.error("{}: {}".format(type(self).__name__,e))
+
 		self.log.debug("List - {}".format(paste_items))
 		self.helper.selectFromList(paste_items,self.on_select,self.configs.get(ConfigType.SELECT_FROM_ITEMS,None))
 
-	def sort_on(self,item):
-		return item['paste_date']
 
 	def on_get_paste(self,data):
 		is_success,msg = data 
@@ -312,23 +332,6 @@ class UserPastesCommand(PasteTool):
 		finally:
 			if error:
 				self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
-
-
-	def parse_xml(self,xml):
-		paste_list = []
-		try:
-			xml = '<Data>' + xml + '</Data>'
-			root = ET.fromstring(xml)
-			for paste in root:
-				paste_item = {}
-				for item in paste:
-					paste_item[item.tag] = item.text
-				paste_list.append(paste_item)
-		except ET.ParseError as e:
-			self.log.error("{}: {}".format(type(self).__name__,e))
-			self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
-		finally:
-			return paste_list
 
 	def on_user_token(self,generated):
 		if not generated:
