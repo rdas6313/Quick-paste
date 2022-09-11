@@ -48,3 +48,25 @@ class TestHttp(DeferrableTestCase):
   		}
 		response_code,msg = self.http.post(base_url,url_path,payload,headers)
 		self.assertNotEqual(response_code,201)
+
+	def test_get(self):
+		base_url = "jsonplaceholder.typicode.com"
+		url_path = "/posts/1"
+		response_code,msg = self.http.get(base_url,url_path)
+		self.assertEqual(response_code,200)
+
+	def test_get_wrong_path_url(self):
+		base_url = "jsonplaceholder.typicode.com"
+		url_path = "/po"
+		response_code,msg = self.http.get(base_url,url_path)
+		self.assertNotEqual(response_code,200)
+
+	def test_get_empty_base_url(self):
+		base_url = ""
+		url_path = "/posts/1"
+		response_code,msg = self.http.get(base_url,url_path)
+		self.assertNotEqual(response_code,200)
+
+	
+
+		
