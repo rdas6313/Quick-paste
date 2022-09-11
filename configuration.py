@@ -33,6 +33,7 @@ class ConfigType:
 	RAISE_ISSUE_MSG = "raise_issue_msg"
 	EMPTY_PASTE_LIST = "empty_paste_list_msg"
 	NO_TITLE = "no_title_found"
+	PUBLIC_RAW_PASTE_URL = "public_raw_paste_url"
 
 
 class Configuration:

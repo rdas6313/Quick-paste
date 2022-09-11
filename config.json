@@ -25,5 +25,6 @@
     "user_name_input_placeholder_msg": "Enter pastebin user name",
     "raise_issue_msg" : "Hummm! It seems some error is occuring.Please raise a issue on github.",
     "empty_paste_list_msg" : "No Paste Found so far.",
-    "no_title_found" : "No title found"
+    "no_title_found" : "No title found",
+    "public_raw_paste_url" : "/raw/"
 }

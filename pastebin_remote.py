@@ -218,5 +218,46 @@ class PastebinDriver():
 		callable((is_success,msg))
 
 
+	def __get_response_msg_from_status(self,status,msg):
+		res_msg = ""
+		is_success = False
+		
+		if status >= 100 and status < 200:
+			res_msg = self.configs[ConfigType.INFO_ERROR_MSG]
+		elif status >= 300 and status < 400:
+			res_msg = self.configs[ConfigType.REDIRECT_ERROR_MSG]
+		elif status >= 400 and status < 500:
+			if status == 404:
+				res_msg = "Oops! Requested item Not Found"
+			else:
+				res_msg = self.configs[ConfigType.CLIENT_ERROR_MSG]
+		elif status >= 500 and status < 600:
+			res_msg = self.configs[ConfigType.SERVER_ERROR_MSG]
+		else:
+			is_success = True
+		if msg and len(msg) < 100:
+			res_msg += msg
+
+		return (is_success,res_msg)
+
+
+	def getPublicPaste(self,callable,paste_key):
+		if not callable or (type(callable).__name__ != 'method' and type(callable).__name__ != 'function'): 
+			raise ValueError("callable must be a method or function and should not be empty")
+		elif not paste_key:
+			raise ValueError("Paste key can't be empty")
+		elif type(paste_key).__name__ != 'str':
+			raise TypeError("Paste key must be string")
+
+		path = self.configs.get(ConfigType.PUBLIC_RAW_PASTE_URL,ConfigType.PUBLIC_RAW_PASTE_URL) + paste_key
+		base_url = self.configs.get(ConfigType.BASE_URL,ConfigType.BASE_URL)
+		status,msg = self.http.get(base_url,path)
+		callable(self.__get_response_msg_from_status(status,msg))
+
+
+
+
+
+
 
 		
