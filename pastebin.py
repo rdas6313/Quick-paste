@@ -377,3 +377,51 @@ class PasteContentCommand(PasteTool):
 				self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
 	
 
+class PublicPastesCommand(PasteTool):
+
+	def on_start_command(self):
+		paste_url = self.helper.inputText("URL","Enter public paste url or unlisted paste url",self.on_paste_url)
+
+	def on_paste_url(self,url):
+	
+		if not url:
+			self.helper.showErrorMessage("Url should not be empty.\n It should be in this format 'https://pastebin.com/4gnN6fD3'")
+			return
+		
+		pattern = "https://pastebin.com/"
+		correct_url,key = get_key_from_url(url,pattern)
+		if not correct_url:
+			self.helper.showErrorMessage("Url should be in this format 'https://pastebin.com/4gnN6fD3'")
+			return
+
+		error = False
+		try:
+			self.remote.getPublicPaste(self.on_get_paste,key)
+		except ValueError as e:
+			error = True
+			self.log.error("{}: {}".format(type(self).__name__,e))
+		except TypeError as e:
+			error = True
+			self.log.error("{}: {}".format(type(self).__name__,e))
+		finally:
+			if error:
+				self.helper.showErrorMessage(self.configs.get(ConfigType.RAISE_ISSUE_MSG,None))
+
+
+	def on_get_paste(self,data):
+		success,msg = data 
+		if not success:
+			self.helper.showErrorMessage(msg)
+			return
+
+		title = "Temp file"
+		self.log.info("Public paste :-\n{}".format(msg))
+		self.helper.execute('paste_content',
+		{
+			"content" : msg,
+			"file_name" : title,
+			"format" : ""
+		})
+
+
+

@@ -23,6 +23,11 @@
             "id"      : "pastebin_3",
             "caption" : "Your pastes",
             "command" : "user_pastes"
+        },
+        {   
+            "id"      : "pastebin_4",
+            "caption" : "Others paste",
+            "command" : "public_pastes"
         }
         ]
     }

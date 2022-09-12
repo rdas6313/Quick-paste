@@ -1,5 +1,6 @@
 from datetime import datetime
 import xml.etree.ElementTree as ET
+import re
 
 def timestamp_to_data_time(timestamp):
 	if not timestamp:
@@ -28,5 +29,22 @@ def parse_xml(xml):
 
 def sort_on(item):
 	return item['paste_date']
+
+def get_key_from_url(url,pattern):
+	if not url or not pattern:
+		raise ValueError("Url and pattern can't be empty")
+	elif type(url).__name__ != 'str' or type(pattern).__name__ != 'str':
+		raise ValueError("Url and pattern both should be string")
+	
+	m = re.search(pattern,url)
+	if m:
+		x = re.split(pattern,url,1)
+		key = x[-1]
+		if "/" in key:
+			return (False,None)
+		else:
+			return (True,key)
+	else:
+		return (False,None)
 	
 	
