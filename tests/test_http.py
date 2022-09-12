@@ -20,8 +20,8 @@ class TestHttp(DeferrableTestCase):
     		'Content-type': 'application/json; charset=UTF-8',
   		}
 
-		response_code,msg = self.http.post(base_url,url_path,payload,headers)
-		self.assertEqual(response_code,201)
+		#response_code,msg = self.http.post(base_url,url_path,payload,headers)
+		#self.assertEqual(response_code,201)
 
 	def test_post_wrong_data(self):
 		base_url = "jsonplaceholder.typicode.com"
@@ -31,8 +31,8 @@ class TestHttp(DeferrableTestCase):
 		});
 
 		headers = None
-		response_code,msg = self.http.post(base_url,url_path,payload,headers)
-		self.assertNotEqual(response_code,201)
+		#response_code,msg = self.http.post(base_url,url_path,payload,headers)
+		#self.assertNotEqual(response_code,201)
 
 	def test_post_wrong_url(self):
 		base_url = "jsonplaceholder.typicode.com"
@@ -46,26 +46,33 @@ class TestHttp(DeferrableTestCase):
 		headers = {
     		'Content-type': 'application/json; charset=UTF-8',
   		}
-		response_code,msg = self.http.post(base_url,url_path,payload,headers)
-		self.assertNotEqual(response_code,201)
+		#response_code,msg = self.http.post(base_url,url_path,payload,headers)
+		#self.assertNotEqual(response_code,201)
 
 	def test_get(self):
 		base_url = "jsonplaceholder.typicode.com"
 		url_path = "/posts/1"
-		response_code,msg = self.http.get(base_url,url_path)
-		self.assertEqual(response_code,200)
+		#response_code,msg = self.http.get(base_url,url_path)
+		#self.assertEqual(response_code,200)
 
 	def test_get_wrong_path_url(self):
 		base_url = "jsonplaceholder.typicode.com"
 		url_path = "/po"
-		response_code,msg = self.http.get(base_url,url_path)
-		self.assertNotEqual(response_code,200)
+		#response_code,msg = self.http.get(base_url,url_path)
+		#self.assertNotEqual(response_code,200)
 
 	def test_get_empty_base_url(self):
 		base_url = ""
 		url_path = "/posts/1"
+		#response_code,msg = self.http.get(base_url,url_path)
+		#self.assertNotEqual(response_code,200)
+
+	def test_get2(self):
+		base_url = "pastebin.com"
+		url_path = "/raw/4gQCtbbj"
 		response_code,msg = self.http.get(base_url,url_path)
-		self.assertNotEqual(response_code,200)
+		self.assertEqual(response_code,200)
+		print(msg)
 
 	
 

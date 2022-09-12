@@ -235,8 +235,13 @@ class PastebinDriver():
 			res_msg = self.configs[ConfigType.SERVER_ERROR_MSG]
 		else:
 			is_success = True
-		if msg and len(msg) < 100:
+		
+		if not is_success:
+			if msg and len(msg) < 100:
+				res_msg += msg 
+		else: 
 			res_msg += msg
+	
 
 		return (is_success,res_msg)
 

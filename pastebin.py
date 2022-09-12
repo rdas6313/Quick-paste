@@ -415,7 +415,7 @@ class PublicPastesCommand(PasteTool):
 			return
 
 		title = "Temp file"
-		self.log.info("Public paste :-\n{}".format(msg))
+		self.log.debug("Public paste :-\n{}".format(msg))
 		self.helper.execute('paste_content',
 		{
 			"content" : msg,

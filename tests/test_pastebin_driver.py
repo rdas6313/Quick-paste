@@ -252,7 +252,7 @@ class TestPastebinDriver(DeferrableTestCase):
 		#self.remote.getUserPaste(None,token,paste_key)
 
 	def test_getPublicPaste(self):
-		paste_key = "4gnN6fD3"
+		paste_key = "4gQCtbbj"
 		self.remote.getPublicPaste(self.on_success_paste,paste_key)	
 
 	def on_success_paste(self,data):
