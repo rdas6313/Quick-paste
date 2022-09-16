@@ -1,1 +1,6 @@
-logs/
+#ignore following files
+logs/*
+
+
+#Don't ignore these files
+!logs/.gitkeep
