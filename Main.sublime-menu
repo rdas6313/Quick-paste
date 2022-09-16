@@ -4,33 +4,27 @@
     "caption" : "Quick Paste",
     "children":
     [
-    {
-        "caption" : "Pastebin",
-        "children":
-        [
         {   
             "id"      : "pastebin_1",
-            "caption" : "Guest paste",
+            "caption" : "Push ( guest )",
             "command" : "guest_paste"
         },
         {   
             "id"      : "pastebin_2",
-            "caption" : "User paste",
+            "caption" : "Push ( user )",
             "command" : "user_paste"
         }
         ,
         {   
             "id"      : "pastebin_3",
-            "caption" : "Your pastes",
+            "caption" : "Pull ( user )",
             "command" : "user_pastes"
         },
         {   
             "id"      : "pastebin_4",
-            "caption" : "Others paste",
+            "caption" : "Pull ( public or unlisted )",
             "command" : "public_pastes"
         }
-        ]
-    }
     ]
 }
 ]
