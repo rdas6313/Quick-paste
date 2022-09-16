@@ -26,5 +26,9 @@
     "raise_issue_msg" : "Hummm! It seems some error is occuring.Please raise a issue on github.",
     "empty_paste_list_msg" : "No Paste Found so far.",
     "no_title_found" : "No title found",
-    "public_raw_paste_url" : "/raw/"
+    "public_raw_paste_url" : "/raw/",
+    "url_format_msg" : "Url should be in this format 'https://pastebin.com/4gnN6fD3'",
+    "empty_url_msg" : "Url should not be empty.\n",
+    "url_placeholder" : "Enter public paste url or unlisted paste url",
+    "url_caption" : "URL"
 }

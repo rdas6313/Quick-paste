@@ -380,18 +380,19 @@ class PasteContentCommand(PasteTool):
 class PublicPastesCommand(PasteTool):
 
 	def on_start_command(self):
-		paste_url = self.helper.inputText("URL","Enter public paste url or unlisted paste url",self.on_paste_url)
+		paste_url = self.helper.inputText(self.configs.get(ConfigType.URL_CAPTION,None),self.configs.get(ConfigType.URL_PLACEHOLDER,None),self.on_paste_url)
 
 	def on_paste_url(self,url):
 	
 		if not url:
-			self.helper.showErrorMessage("Url should not be empty.\n It should be in this format 'https://pastebin.com/4gnN6fD3'")
+			msg = self.configs.get(ConfigType.EMPTY_URL_MSG,None) + self.configs.get(ConfigType.URL_FORMAT_MSG,None)
+			self.helper.showErrorMessage(msg)
 			return
 		
 		pattern = "https://pastebin.com/"
 		correct_url,key = get_key_from_url(url,pattern)
 		if not correct_url:
-			self.helper.showErrorMessage("Url should be in this format 'https://pastebin.com/4gnN6fD3'")
+			self.helper.showErrorMessage(self.configs.get(ConfigType.URL_FORMAT_MSG,None))
 			return
 
 		error = False

@@ -34,6 +34,10 @@ class ConfigType:
 	EMPTY_PASTE_LIST = "empty_paste_list_msg"
 	NO_TITLE = "no_title_found"
 	PUBLIC_RAW_PASTE_URL = "public_raw_paste_url"
+	URL_FORMAT_MSG = "url_format_msg"
+	EMPTY_URL_MSG = "empty_url_msg"
+	URL_PLACEHOLDER = "url_placeholder"
+	URL_CAPTION = "url_caption"
 
 
 class Configuration:
