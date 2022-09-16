@@ -1,6 +1,7 @@
 from datetime import datetime
 import xml.etree.ElementTree as ET
 import re
+import os
 
 def timestamp_to_data_time(timestamp):
 	if not timestamp:
@@ -46,5 +47,12 @@ def get_key_from_url(url,pattern):
 			return (True,key)
 	else:
 		return (False,None)
+
+def get_file_path(file_name):
+	if not file_name:
+		return
+	dir_path = os.path.dirname(os.path.realpath(__file__))
+	file_path = os.path.join(dir_path,file_name)
+	return file_path
 	
 	

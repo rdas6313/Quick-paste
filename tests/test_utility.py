@@ -81,4 +81,12 @@ class TestUtility(DeferrableTestCase):
 		pattern = ""
 		actual_key = "4gnN6fD3"
 		status,key = get_key_from_url(url,pattern)
+
+	def test_get_file_path(self):
+		path = get_file_path("myfile/app.log")
+		self.assertEqual(path,"/home/rdas6313/.config/sublime-text/Packages/Quick_Paste/myfile/app.log")
+
+	def test_get_file_path_empty_file_name(self):
+		path = get_file_path("")
+		self.assertFalse(path)
 		
