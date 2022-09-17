@@ -1,5 +1,5 @@
 import logging
-from Quick_Paste.utility import *
+from .utility import *
 
 class Logger:
 	def __init__(self):
