@@ -14,7 +14,7 @@ Quick-paste is a sublime text plugin which helps in pushing code/text to the pas
 For this plugin to work, you need to have sublime text 4 (build 4126). 
 Now, Follow these instructions to install Quick-paste plugin.
 
-1. First Download the latest released source file from Releases section.
+1. First download the latest released source file from **Releases** section.
 2. Extract the source file.
 3. Rename the extracted folder like this "Quick-paste". Do not add any dot or anything else after 'paste'.
 4. Copy or cut that extracted folder.
