@@ -22,4 +22,7 @@ Now, Follow these instructions to install Quick-paste plugin.
 6. Click on Preferences -> Browse packages. It will open package directory.
 7. Paste that copied folder in that directory.
 
+## LICENSE
+**Quick-paste** is licensed under the [MIT](https://github.com/rdas6313/Quick-paste/blob/main/LICENSE.txt) license.
+
 
