@@ -299,6 +299,7 @@ class UserPastesCommand(PasteTool):
 			self.helper.showErrorMessage(msg)
 			return
 		title = self.data.get('selected_paste_title',None)
+		msg = msg.replace("\r","")
 		self.helper.execute('paste_content',
 		{
 			"content" : msg,
