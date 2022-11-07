@@ -1,9 +1,8 @@
 # Quick-paste
 Quick-paste is a sublime text plugin which helps in pushing code/text to the paste server as well as pulling code/text from the paste server mentioned below.
-
-## Currently supported push server
-- Pastebin
-## Currently supported pull server
+## Demo
+  [![Click here for demo video]()](https://www.youtube.com/watch?v=HK_S6ZRGCH0)
+## Currently supported server
 - Pastebin
 ## Currently supported operations
 - Push (guest) :- It quickly pushes code/text to server as a guest.
